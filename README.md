@@ -9,10 +9,11 @@ The intention with this program is to allow simple access to IO's on ESP devices
 
 My usecase is remote outputs to be controlled via WiFi from GNU Octave (similar to Matlab) for automated test and measurement, e.g. the first example above will read as below.
 
-**Note** in Octave and Matlab you can code the arguments within the URL or specify as key / value pairs, so both are equivalent.
-
 > `webread("http://WebIO/GPIB?state=1,22")`
+>
 > `webread("http://WebIO/GPIB", "state", "1,22")`
+
+**Note** in Octave and Matlab you can code the arguments within the URL or specify as key / value pairs, so both are equivalent.
 
 ESP's hardware blocks will be implemented as individual **subsystems**. Each subsystem will print additional (plain) help text if called without arguments.
 
