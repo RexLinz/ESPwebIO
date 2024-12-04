@@ -7,7 +7,12 @@ The intention with this program is to allow simple access to IO's on ESP devices
 - <http://WebIO/GPIO?state=1,22> to read state of GPIO pins 1 and 11
 - <http://WebIO/GPIO?set=23> to set GPIO pin 23 active
 
-My usecase is remote outputs to be controlled from GNU Octave (similar to Matlab) for automated test and measurement.
+My usecase is remote outputs to be controlled via WiFi from GNU Octave (similar to Matlab) for automated test and measurement, e.g. the first example above will read as below.
+
+**Note** in Octave and Matlab you can code the arguments within the URL or specify as key / value pairs, so both are equivalent.
+
+> `webread("http://WebIO/GPIB?state=1,22")`
+> `webread("http://WebIO/GPIB", "state", "1,22")`
 
 ESP's hardware blocks will be implemented as individual **subsystems**. Each subsystem will print additional (plain) help text if called without arguments.
 
@@ -34,19 +39,15 @@ If a query is returning value(s) this response will be JSON formatted for easy p
 
 #### digital IO
 
-set/clear/toggle=pins ... new digital pin state
-
-state=pins ... query digital pin state
+- set/clear/toggle=pins ... new digital pin state
+- state=pins ... query digital pin state
 
 #### configuration
 
-input/inputPullUp/inputPullDown=pins ... digital input pin modes
-
-output/outputOpenDrain=pins ... digital output pin modes
-
-analog=pins ... analog input mode
-
-mode=pins ... query pin mode
+- input/inputPullUp/inputPullDown=pins ... digital input pin modes
+- output/outputOpenDrain=pins ... digital output pin modes
+- analog=pins ... analog input mode
+- mode=pins ... query pin mode
 
 #### pins is a list of comma separated GPIO numbers
 
