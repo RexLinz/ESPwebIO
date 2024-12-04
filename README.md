@@ -14,6 +14,7 @@ ESP's hardware blocks will be implemented as individual **subsystems**
 ### Subsystems available right now
 
 - `/GPIO` access to GPIO (digital pin configuration, input and output)
+- [test](#gpio) test
 
 ### Planned in future
 
