@@ -32,18 +32,27 @@ If a query is returning value(s) this response will be JSON formatted for easy p
 
 ### GPIO
 
-digital IO
-    set/clear/toggle=pins ... new digital pin state
-    state=pins ... query digital pin state
+#### digital IO
 
-configuration
-    input/inputPullUp/inputPullDown=pins ... digital input pin modes
-    output/outputOpenDrain=pins ... digital output pin modes
-    analog=pins ... analog input mode
-    mode=pins ... query pin mode
+set/clear/toggle=pins ... new digital pin state
 
-pins is a list of comma separated GPIO numbers, e.g.
-    <http://webIO/GPIO/state=22,23> reading state of GPIO pins 22 and 23
+state=pins ... query digital pin state
+
+#### configuration
+
+input/inputPullUp/inputPullDown=pins ... digital input pin modes
+
+output/outputOpenDrain=pins ... digital output pin modes
+
+analog=pins ... analog input mode
+
+mode=pins ... query pin mode
+
+#### pins is a list of comma separated GPIO numbers
+
+e.g. <http://webIO/GPIO/state=22,23> reading state of GPIO pins 22 and 23
+
+#### return value
 
 commands writing data return 1 as result if successful, 0 on error
 
