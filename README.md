@@ -17,6 +17,9 @@ My usecase is using outputs on an ESP32 to be controlled via WiFi from GNU Octav
 
 ESP's hardware blocks will be implemented as individual **subsystems**. Each subsystem will print additional (plain) help text if called without arguments.
 
+Multiple requests to a single subsystem could be done in one request and will be processed in order specified, e.g.
+<http://WebIO/GPIO?output=23&toggle=23&state=23> will set GPIO pin 23 to OUTPUT, toggle the state and read the state resulting.
+
 If a query is returning value(s) this response will be JSON formatted for easy processing in the client's application. Web browsers will show this in a nice way as well.
 
 ### Subsystems available right now
@@ -52,7 +55,7 @@ If a query is returning value(s) this response will be JSON formatted for easy p
 
 #### specifying pin(s)
 
-With string **pins** is a list of comma separated **GPIO** numbers (not ESP chip or development kit pin numbers) e.g. <http://webIO/GPIO/state=22,23> reading state of GPIO pins 22 and 23
+With string **pins** is a list of comma separated **GPIO** numbers (not ESP chip or development kit pin numbers) e.g. <http://webIO/GPIO?state=22,23> reading state of GPIO pins 22 and 23
 
 #### return value
 
