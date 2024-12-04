@@ -13,16 +13,16 @@ ESP's hardware blocks will be implemented as individual **subsystems**
 
 ### Subsystems available right now
 
-- </GPIO> access to GPIO (digital pin configuration, input and output)
+- `/GPIO` access to GPIO (digital pin configuration, input and output)
 
-### Planned in future:
+### Planned in future
 
-- </Serial> sending and receiving from serial lines (UART)
-- </ADC> reading analog input
-- </DAC> set analog output
-- </I2C> IO via I2C
-- </SPI> IO via SPI
-- </PWM>
+- `/Serial` sending and receiving from serial lines (UART)
+- `/ADC` reading analog input
+- `/DAC` set analog output
+- `/I2C` IO via I2C
+- `/SPI` IO via SPI
+- `/PWM` PWM output
 - ...
 
 ## Subsystem description
