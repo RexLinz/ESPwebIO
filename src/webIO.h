@@ -5,6 +5,14 @@
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
+// get the next uint8 value from list, 
+// remove that from list
+int nextInt(String &list);
+
+// get the next float value from comma separated list, 
+// remove that from list
+float nextFloat(String &list);
+
 class espGPIO
 {
 private:
