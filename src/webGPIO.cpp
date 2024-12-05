@@ -160,9 +160,7 @@ String espGPIO::parse(String command, String numberList)
     // assemble returned strings to JSON like array
     while (numberList.length() > 0)
     {
-        // get next number from pinList
-        int n = numberList.indexOf(',');
-        uint8_t pin = numberList.toInt();
+        uint8_t pin = nextInt(numberList);
         String temp;
         if (command == "set")
             temp = set(pin);
@@ -184,10 +182,6 @@ String espGPIO::parse(String command, String numberList)
         if (result.length() > 0)
             result += ","; // item separator
         result += temp; // function result
-        if (n >= 0)
-            numberList = numberList.substring(n+1); // next after comma
-        else
-            numberList = ""; // nothing left
     }
     if (result.length()==0)
         return ""; // no output generated

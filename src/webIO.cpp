@@ -8,7 +8,10 @@ int nextInt(String &list)
 {
     int val = list.toInt();
     int n = list.indexOf(',');
-    list = list.substring(n);
+    if (n>=0)
+        list = list.substring(n+1);
+    else
+        list = "";
     return val;
 }
 
@@ -18,7 +21,10 @@ float nextFloat(String &list)
 {
     float val = list.toFloat();
     int n = list.indexOf(',');
-    list = list.substring(n);
+    if (n>=0)
+        list = list.substring(n+1);
+    else
+        list = "";
     return val;
 }
 
