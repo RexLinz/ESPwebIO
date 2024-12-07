@@ -79,13 +79,13 @@ void handleWebSerial(espSerial &serial, AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
-        request->send(200, "text/plain", webSerial0.help());
+        request->send(200, "text/plain", serial.help());
     // process all arguments from request
     else 
     {
         for (uint8_t i = 0; i < request->args(); i++) 
         {
-            String response = webSerial0.parse(request->argName(i), request->arg(i));
+            String response = serial.parse(request->argName(i), request->arg(i));
             if (response.length() > 0)
             {
                 if (message.length() > 0)
