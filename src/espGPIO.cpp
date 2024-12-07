@@ -158,6 +158,7 @@ String espGPIO::parse(String command, String numberList)
     // split pinList into numbers separated by comma
     // for each number call function()
     // assemble returned strings to JSON like array
+    // TODO add remaining pin modes
     while (numberList.length() > 0)
     {
         uint8_t pin = nextInt(numberList);
