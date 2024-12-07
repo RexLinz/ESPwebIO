@@ -106,13 +106,13 @@ void handleSerial0(AsyncWebServerRequest *request)
 // handle /Serial1 requests
 void handleSerial1(AsyncWebServerRequest *request)
 {
-    handleWebSerial(webSerial0, request);
+    handleWebSerial(webSerial1, request);
 }
 
 // handle /Serial2 requests
 void handleSerial2(AsyncWebServerRequest *request)
 {
-    handleWebSerial(webSerial0, request);
+    handleWebSerial(webSerial2, request);
 }
 
 // handle body data, forward to Serialx output

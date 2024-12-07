@@ -58,11 +58,13 @@ public:
     void print(String s) { _serial.print(s); }; // send string s
     void println(String s) { _serial.print(s+_endOfLine); }; // ... adding line termination
     String read();   // read all available data
-    String readln(); // read a line up to (including) configured line termination
+    String readln(); // read a line up to (excluding) configured line termination
     String parse(String command, String value);  // parameters to be determined
 };
 
 extern espSerial webSerial0;
+extern espSerial webSerial1;
+extern espSerial webSerial2;
 
 // TODO future classes to be implemented
 /*
