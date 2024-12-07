@@ -82,17 +82,19 @@ private:
     void setOffset(int o) { _offset = o; };
     void setScale(float s) { _scale = s; };
     void setValue(float val) { raw(round(val*_scale + _offset)); };
+    void disable() { dacDisable(dacPin); };
 public:
     espDAC(uint8_t pin) : dacPin(pin) {};
     String help();
     String parse(String command, String value);
 };
 
-extern espDAC webDAC1(25);
-extern espDAC webDAC2(26);
-// TODO future classes to be implemented
-/*
+extern espDAC webDAC1;
+extern espDAC webDAC2;
 
+
+/* =====================================
+   TODO future classes to be implemented
 
 // ESP32 has two ADC's, but ADC2 is blocked by WiFi!
 class espADC

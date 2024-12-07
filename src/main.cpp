@@ -75,7 +75,7 @@ void handleGPIO(AsyncWebServerRequest *request)
 }
 
 // async serial interfaces
-void handleWebSerial(espSerial &serial, AsyncWebServerRequest *request)
+void handleSerial(espSerial &serial, AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
@@ -100,19 +100,19 @@ void handleWebSerial(espSerial &serial, AsyncWebServerRequest *request)
 // handle /Serial0 requests (equals /Serial)
 void handleSerial0(AsyncWebServerRequest *request)
 {
-    handleWebSerial(webSerial0, request);
+    handleSerial(webSerial0, request);
 }
 
 // handle /Serial1 requests
 void handleSerial1(AsyncWebServerRequest *request)
 {
-    handleWebSerial(webSerial1, request);
+    handleSerial(webSerial1, request);
 }
 
 // handle /Serial2 requests
 void handleSerial2(AsyncWebServerRequest *request)
 {
-    handleWebSerial(webSerial2, request);
+    handleSerial(webSerial2, request);
 }
 
 // handle body data, forward to Serialx output
@@ -130,6 +130,38 @@ void handleBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_
     if(index + len == total){
         Serial.printf("BodyEnd: %u B\n", total);
     }
+}
+
+void handleDAC(espDAC &dac, AsyncWebServerRequest *request)
+{
+    String message = "";
+    if (request->args() == 0)
+        request->send(200, "text/plain", dac.help());
+    // process all arguments from request
+    else 
+    {
+        for (uint8_t i = 0; i < request->args(); i++) 
+        {
+            String response = dac.parse(request->argName(i), request->arg(i));
+            if (response.length() > 0)
+            {
+                if (message.length() > 0)
+                    message += "\r\n";
+                message += response;
+            }
+        }
+        request->send(200, "text/plain", message);
+    }
+}
+
+void handleDAC1(AsyncWebServerRequest *request)
+{
+    handleDAC(webDAC1, request);
+}
+
+void handleDAC2(AsyncWebServerRequest *request)
+{
+    handleDAC(webDAC2, request);
 }
 
 // display some debugging information about any
@@ -170,6 +202,9 @@ void setup()
     server.on("/Serial0", handleSerial0);
     server.on("/Serial1", handleSerial1);
     server.on("/Serial2", handleSerial2);
+    // digital to analog converters
+    server.on("/DAC1", handleDAC1);
+    server.on("/DAC2", handleDAC2);
     // server.on("/", handleRoot);
 
     // body data handling for binary IO to serial

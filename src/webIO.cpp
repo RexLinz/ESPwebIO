@@ -40,4 +40,3 @@ espSerial webSerial2(Serial2); // pins TX=GPIO17, RX=GPIO16
 // ESP32 has two DAC channels available at gpio pins 25 and 26
 espDAC webDAC1(25);
 espDAC webDAC2(26);
-

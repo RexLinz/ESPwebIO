@@ -7,6 +7,7 @@ String espDAC::help()
         "\nconfiguration for scaled output using raw==round(value*scale+offset)\r\n"
         "  scale=float ... set scaling (default 1.0)\r\n"
         "  offset=float ... set offset (default 0.0)\r\n"
+        "  disable ... disable DAC function on this channel (pin)\r\n"
         "\nwriting output\r\n"
         "  raw=uint_8 ... write out as is\r\n"
         "  value=float ... write out scaled round(float*scale+offset)\r\n";
@@ -28,6 +29,8 @@ String espDAC::parse(String command, String value)
         setOffset(value.toInt());
     else if (command == "scale")
         setScale(value.toFloat());
+    else if (command == "disable")
+        disable();
     else if (command == "value")
         setValue(value.toFloat());
     else
