@@ -86,7 +86,7 @@ String espSerial::parse(String command, String value)
         println(value);
     else if (command == "read")
         result = read();
-    else if (command == "readLn")
+    else if (command == "readln")
         result = readln();
     else
         result = "invalid keyword " + command;
