@@ -58,10 +58,8 @@ void handleGPIO(AsyncWebServerRequest *request)
     String message = "";
     if (request->args() == 0)
         request->send(200, "text/plain", webGPIO.help());
-    // process all arguments from request
-    // TODO if request->args()==0 return HTML help text
     else 
-    {
+    { // process all arguments from request
         for (uint8_t i = 0; i < request->args(); i++) 
         {
             String response = webGPIO.parse(request->argName(i), request->arg(i));
@@ -73,6 +71,64 @@ void handleGPIO(AsyncWebServerRequest *request)
             }
         }
         request->send(200, "application/json", "{\r\n" + message + "\r\n}");
+    }
+}
+
+// async serial interfaces
+void handleWebSerial(espSerial &serial, AsyncWebServerRequest *request)
+{
+    String message = "";
+    if (request->args() == 0)
+        request->send(200, "text/plain", webSerial0.help());
+    // process all arguments from request
+    else 
+    {
+        for (uint8_t i = 0; i < request->args(); i++) 
+        {
+            String response = webSerial0.parse(request->argName(i), request->arg(i));
+            if (response.length() > 0)
+            {
+                if (message.length() > 0)
+                    message += "\r\n";
+                message += response;
+            }
+        }
+        request->send(200, "text/plain", message);
+    }
+}
+
+// handle /Serial0 requests (equals /Serial)
+void handleSerial0(AsyncWebServerRequest *request)
+{
+    handleWebSerial(webSerial0, request);
+}
+
+// handle /Serial1 requests
+void handleSerial1(AsyncWebServerRequest *request)
+{
+    handleWebSerial(webSerial0, request);
+}
+
+// handle /Serial2 requests
+void handleSerial2(AsyncWebServerRequest *request)
+{
+    handleWebSerial(webSerial0, request);
+}
+
+// handle body data, forward to Serialx output
+// TODO handle actual serial output (not just debugging)
+void handleBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+{
+    if(!index){
+        Serial.print("URL: " + request->url());
+        Serial.print(" args=" + String(request->args()));
+        Serial.printf("BodyStart: %u B\n", total);
+    }
+    for(size_t i=0; i<len; i++){
+        Serial.write(data[i]);
+    }
+    if(index + len == total){
+        Serial.printf("BodyEnd: %u B\n", total);
     }
 }
 
@@ -109,10 +165,17 @@ void setup()
     server.on("/status", handleStatus);
     // .../GPIO -> access digital IO pins
     server.on("/GPIO", handleGPIO);
-
-    // define some request handlers
-    // .../ -> root access displays file system content
+    // async serial interfaces
+    server.on("/Serial",  handleSerial0); // Serial equals Serial0
+    server.on("/Serial0", handleSerial0);
+    server.on("/Serial1", handleSerial1);
+    server.on("/Serial2", handleSerial2);
     // server.on("/", handleRoot);
+
+    // body data handling for binary IO to serial
+    // https://github.com/me-no-dev/ESPAsyncWebServer#body-data-handling
+    // https://github.com/me-no-dev/ESPAsyncWebServer/issues/123
+    server.onRequestBody(handleBody);  
     
     // ... not found -> display error message with debugging information
     server.onNotFound(handleNotFound);

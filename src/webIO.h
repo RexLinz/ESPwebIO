@@ -40,31 +40,32 @@ public:
 // ESP has one GPIO instance
 extern espGPIO webGPIO;
 
-// TODO future classes to be implemented
-/*
 
 class espSerial
 {
 private:
     HardwareSerial &_serial;
-    String _endOfLine = "";
+    String _endOfLine = "\r\n";
+    String rxBuffer = ""; // receive buffer
 public:
-    espSerial(HardwareSerial &interface) : _serial(interface) {};
-    void begin(unsigned long baud, uint8_t rxPin=-1, uint8_t txPin=-1);
-    void baudRate(unsigned long baud) { _serial.updateBaudRate(baud); };
-    void setPins(uint8_t rxPin=-1, uint8_t txPin=-1) { _serial.setPins(rxPin, txPin); };
-    void termChar(String t) { _endOfLine = t; }; // set termination 
+    espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
+    static String help();
+    void begin(unsigned long baud) { _serial.begin(baud); };
+    void setBaud(unsigned long baud) { _serial.updateBaudRate(baud); };
+    void rxPin(uint8_t rxPin) { _serial.setPins(rxPin, -1); };
+    void txPin(uint8_t txPin) { _serial.setPins(-1, txPin); };
+    void setTerm(String t); // set termination 
     void print(String s) { _serial.print(s); }; // send string s
-    void println(String s) { _serial.print(s+_endOfLine); }; // ... will add termination
+    void println(String s) { _serial.print(s+_endOfLine); }; // ... adding line termination
     String read();   // read all available data
-    String readln(); // read a line up to configured termination character(s)
-    String parse();  // parameters to be determined
+    String readln(); // read a line up to (including) configured line termination
+    String parse(String command, String value);  // parameters to be determined
 };
 
-// ESP32 has 3 async serial interfaces 
-espSerial webSerial0(Serial);  // pins TX=GPIO0, RX=GPIO1 - connected to USB
-espSerial webSerial1(Serial1); // not available on Dev Kit C without remapping pins
-espSerial webSerial2(Serial2); // pins TX=GPIO17, RX=GPIO16
+extern espSerial webSerial0;
+
+// TODO future classes to be implemented
+/*
 
 // ESP32 has two ADC's, but ADC2 is blocked by WiFi!
 class espADC
