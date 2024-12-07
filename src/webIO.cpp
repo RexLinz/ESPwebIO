@@ -15,6 +15,7 @@ int nextInt(String &list)
     return val;
 }
 
+/*
 // get the next float value from comma separated list, 
 // remove that from list
 float nextFloat(String &list)
@@ -27,6 +28,7 @@ float nextFloat(String &list)
         list = "";
     return val;
 }
+*/
 
 // public available objects
 espGPIO webGPIO;

@@ -11,7 +11,7 @@ int nextInt(String &list);
 
 // get the next float value from comma separated list, 
 // remove that from list
-float nextFloat(String &list);
+//float nextFloat(String &list);
 
 class espGPIO
 {
