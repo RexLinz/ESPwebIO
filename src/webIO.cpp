@@ -27,3 +27,17 @@ float espUtil::nextFloat(String &list)
         list = "";
     return val;
 }
+
+
+// ESP32 has one set of GPIO
+espGPIO webGPIO;
+
+// ESP32 has 3 async serial interfaces 
+espSerial webSerial0(Serial);  // pins TX=GPIO0, RX=GPIO1 - connected to USB
+espSerial webSerial1(Serial1); // not available on Dev Kit C without remapping pins
+espSerial webSerial2(Serial2); // pins TX=GPIO17, RX=GPIO16
+
+// ESP32 has two DAC channels available at gpio pins 25 and 26
+espDAC webDAC1(25);
+espDAC webDAC2(26);
+

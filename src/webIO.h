@@ -61,35 +61,38 @@ private:
 public:
     static String help();
     espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
-    String parse(String command, String value);  // parameters to be determined
+    String parse(String command, String value);
 };
 
 extern espSerial webSerial0;
 extern espSerial webSerial1;
 extern espSerial webSerial2;
 
-// TODO future classes to be implemented
-/*
-
 // ESP32 has two DAC's
 class espDAC
 {
 private:
-    DAC &_dac;
-    int _offset = 0;
+    uint8_t dacPin;
+    // TODO set default scale and offset to get approximately voltage specified
     float _scale = 1.0f;
-public:
-    espDAC(DAC ?dac) : _dac(dac);
-    void raw(int value);
+    float _offset = 0.0f;
+    // raw output
+    void raw(uint8_t value);
     // scaled output
-    void offset(int o) { _offset = o; };
-    void scale(float s) {_scale = s; };
-    void value(float val) { raw(round(val * _scale) + _offset); };
-    String parse(); // parameters to be determined
+    void setOffset(int o) { _offset = o; };
+    void setScale(float s) { _scale = s; };
+    void setValue(float val) { raw(round(val*_scale + _offset)); };
+public:
+    espDAC(uint8_t pin) : dacPin(pin) {};
+    String help();
+    String parse(String command, String value);
 };
 
-espDAC webDAC1(DAC1);
-espDAC webDAC2(DAC2);
+extern espDAC webDAC1(25);
+extern espDAC webDAC2(26);
+// TODO future classes to be implemented
+/*
+
 
 // ESP32 has two ADC's, but ADC2 is blocked by WiFi!
 class espADC
