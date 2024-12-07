@@ -1,4 +1,4 @@
-% loopback test on serial2
+% loopback test on /Serial2
 % connect pins 16 and 17 on devkit to get a loopback on serial 2
 
 % server web address or host name

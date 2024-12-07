@@ -1,4 +1,4 @@
-% test string class
+% test WebIO's serial IO
 
 % server web address or host name
 serial0 = "http://WebIO/Serial0"; % serial interface to host
