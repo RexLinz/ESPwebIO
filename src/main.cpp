@@ -41,14 +41,22 @@ void connectWiFi()
 void handleRoot(AsyncWebServerRequest *request) 
 {
     // TODO return main help ans status?
+    String message = 
+        "WebIO version 1.2\r\n"
+        "available subsystems\r\n"
+        "  /GPIO\r\n"
+        "  /Serial, /Serial0, /Serial1, Serial2\r\n"
+        "  /DAC1, /DAC2\r\n"
+        "  /ADC\r\n";
+    request->send(200, "text/plain", message); // application/json
 }
 
 // display status information
 void handleStatus(AsyncWebServerRequest *request)
 {
-    String message = "WebIO version 1.0 application status\n";
-    message += "Free heap " + String(ESP.getFreeHeap()) + " bytes, largest block " +String(ESP.getMaxAllocHeap()) + " bytes\n";
-    message += "Network \"" + WiFi.SSID() + "\" RSSI " + String(WiFi.RSSI()) + " dB\n";
+    String message = 
+        "Free heap " + String(ESP.getFreeHeap()) + " bytes, largest block " +String(ESP.getMaxAllocHeap()) + " bytes\r\n"
+        "Network \"" + WiFi.SSID() + "\" RSSI " + String(WiFi.RSSI()) + " dB\r\n";
     request->send(200, "text/plain", message); // application/json
 }
 
@@ -132,14 +140,14 @@ void handleBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_
     }
 }
 
+// handle DAC requests
 void handleDAC(espDAC &dac, AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
         request->send(200, "text/plain", dac.help());
-    // process all arguments from request
     else 
-    {
+    { // process all arguments from request
         for (uint8_t i = 0; i < request->args(); i++) 
         {
             String response = dac.parse(request->argName(i), request->arg(i));
@@ -162,6 +170,28 @@ void handleDAC1(AsyncWebServerRequest *request)
 void handleDAC2(AsyncWebServerRequest *request)
 {
     handleDAC(webDAC2, request);
+}
+
+// handle ADC requests
+void handleADC(AsyncWebServerRequest *request)
+{
+    String message = "";
+    if (request->args() == 0)
+        request->send(200, "text/plain", webADC.help());
+    else 
+    { // process all arguments from request
+        for (uint8_t i = 0; i < request->args(); i++) 
+        {
+            String response = webADC.parse(request->argName(i), request->arg(i));
+            if (response.length() > 0)
+            {
+                if (message.length() > 0)
+                    message += ",\r\n";
+                message += response;
+            }
+        }
+        request->send(200, "application/json", "{\r\n" + message + "\r\n}");
+    }
 }
 
 // display some debugging information about any
@@ -193,6 +223,8 @@ void setup()
 
     connectWiFi();
 
+    // application version and general help 
+    server.on("/", handleRoot);
     // .../status -> display some status information
     server.on("/status", handleStatus);
     // .../GPIO -> access digital IO pins
@@ -205,7 +237,8 @@ void setup()
     // digital to analog converters
     server.on("/DAC1", handleDAC1);
     server.on("/DAC2", handleDAC2);
-    // server.on("/", handleRoot);
+    // analog to digital converter
+    server.on("/ADC", handleADC);
 
     // body data handling for binary IO to serial
     // https://github.com/me-no-dev/ESPAsyncWebServer#body-data-handling
