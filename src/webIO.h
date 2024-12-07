@@ -77,11 +77,11 @@ private:
     float _scale = 1.0f;
     float _offset = 0.0f;
     // raw output
-    void raw(uint8_t value);
+    void setRaw(uint8_t value);
     // scaled output
     void setOffset(int o) { _offset = o; };
     void setScale(float s) { _scale = s; };
-    void setValue(float val) { raw(round(val*_scale + _offset)); };
+    void setValue(float val) { setRaw(round(val*_scale + _offset)); };
     void disable() { dacDisable(dacPin); };
 public:
     espDAC(uint8_t pin) : dacPin(pin) {};
@@ -92,29 +92,33 @@ public:
 extern espDAC webDAC1;
 extern espDAC webDAC2;
 
+// ESP32 has two ADC's, but ADC2 is blocked by WiFi!
+class espADC : private espUtil
+{
+private:
+    uint16_t oversampling=1; // oversampling (sum n values)
+    adc_attenuation_t attenuation = ADC_6db; // best performance
+    float offset = 0.0f;
+    float scale = 1.0f;
+    void setOversampling(uint16_t n) { oversampling = n; };
+    void setAttenuation(String s);
+    // read raw data from pin x (after summing n readings)
+    uint32_t getRaw(uint8_t pin);
+    // scaled input 
+    // TODO manage per pin
+    void setOffset(float o) { offset = o; };
+    void setScale(float s) { scale = s; };
+    float getValue(uint8_t pin) { return ((getRaw(pin)-offset) * scale); };
+    String parseList(String command, String numberList);
+public:
+    espADC();
+    String help();
+    String parse(String command, String value); // parameters to be determined
+};
+extern espADC webADC;
 
 /* =====================================
    TODO future classes to be implemented
-
-// ESP32 has two ADC's, but ADC2 is blocked by WiFi!
-class espADC
-{
-private:
-    ADC &_adc;
-    uint _n; // oversampling (sum n values)
-    int _offset = 0;
-    float _scale = 1.0f;
-public:
-    void oversampling(uint n);
-    // read raw data from pin x (after summing n readings)
-    int raw(uint8_t pin);
-    // scaled input TODO manage per pin
-    void offset(int o) { _offset = o; };
-    void scale(float s) {_scale = s; };
-    float value(uint8_t pin) { return ((raw(pin)-_offset) * _scale};
-    String parse(); // parameters to be determined
-};
-espADC webADC1(ADC1);
 
 class espI2C
 {
