@@ -1,8 +1,5 @@
 #include "webIO.h"
 
-// ESP has one set of GPIO
-espGPIO webGPIO;
-
 espGPIO::espGPIO()
 {
     for (int i=0; i<NUM_OUPUT_PINS; i++)

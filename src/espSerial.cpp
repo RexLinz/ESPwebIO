@@ -1,10 +1,5 @@
 #include "webIO.h"
 
-// ESP32 has 3 async serial interfaces 
-espSerial webSerial0(Serial);  // pins TX=GPIO0, RX=GPIO1 - connected to USB
-espSerial webSerial1(Serial1); // not available on Dev Kit C without remapping pins
-espSerial webSerial2(Serial2); // pins TX=GPIO17, RX=GPIO16
-
 // TODO send out message body of POST commands
 String espSerial::help()
 {
@@ -73,9 +68,6 @@ String espSerial::parse(String command, String value)
 {
     // _serial.println(command + ":" + value);
     String result = "";
-    // split pinList into numbers separated by comma
-    // for each number call function()
-    // assemble returned strings to JSON like array
     if (command == "begin")
         _serial.begin(value.toInt());
     else if (command == "baud")
