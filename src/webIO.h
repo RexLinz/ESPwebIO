@@ -47,7 +47,6 @@ private:
     HardwareSerial &_serial;
     String _endOfLine = "\r\n";
     String rxBuffer = ""; // receive buffer
-    static String help();
     void begin(unsigned long baud) { _serial.begin(baud); };
     void setBaud(unsigned long baud) { _serial.updateBaudRate(baud); };
     void rxPin(uint8_t rxPin) { _serial.setPins(rxPin, -1); };
@@ -58,6 +57,7 @@ private:
     String read();   // read all available data
     String readln(); // read single line removing configured line termination
 public:
+    static String help();
     espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
     String parse(String command, String value);  // parameters to be determined
 };
