@@ -26,10 +26,10 @@ If a query is returning value(s) this response will be JSON formatted for easy p
 
 - `/status` print version, memory and WiFi information
 - [/GPIO](#gpio) access to GPIO (digital pin configuration, input and output)
+- [/Serial](#serial) sending and receiving from serial lines (UART)
 
 ### Planned in future
 
-- `/Serial` sending and receiving from serial lines (UART)
 - `/ADC` reading analog input
 - `/DAC` set analog output
 - `/I2C` IO via I2C
@@ -41,17 +41,19 @@ If a query is returning value(s) this response will be JSON formatted for easy p
 
 ### GPIO
 
-#### digital IO
+Access to GPIO (digital pin configuration, input and output)
 
-- set/clear/toggle=pins ... new digital pin state
-- state=pins ... query digital pin state
-
-#### configuration
+#### GPIO configuration
 
 - input/inputPullUp/inputPullDown=pins ... digital input pin modes
 - output/outputOpenDrain=pins ... digital output pin modes
 - analog=pins ... analog input mode
 - mode=pins ... query pin mode
+
+#### digital IO
+
+- set/clear/toggle=pins ... new digital pin state
+- state=pins ... query digital pin state
 
 #### specifying pin(s)
 
@@ -61,6 +63,32 @@ With string **pins** is a list of comma separated **GPIO** numbers (not ESP chip
 
 Commands writing data return 1 as result if successful, 0 on error
 
+### Serial
+
+Sending and receiving from serial lines (UART)
+
+- **/Serial0** pins TX=GPIO0, RX=GPIO1 - connected to USB. Also available as **/Serial**
+- **/Serial1** not available on Dev Kit C without remapping pins
+- **/Serial2** pins TX=GPIO17, RX=GPIO16
+
+#### Serial configuration
+
+- begin=baud   ... initialize. Equal to Serial.begin(baudrate) on Arduino. **NOTE** at the moment serial settings are fixed to 8N1
+- setBaud=baud ... change baud rate. Equal to Serial.setBaud(baudrate) on Arduino
+- txPin=pin
+- rxPin=pin
+- setTerm=CR|LF|CRLF (default)
+
+**NOTE** if accessing a serial port on different pins than default set txPin and rxPin before calling begin, e.g. <http://WebIO/Serial1?txPin=23&rxPin=22&begin(115200)> to configure Serial1 using txPin 23, rxPin 22 at 115200 baud, 8N1.
+
+#### reading and writing to Serial
+
+- write=string ... send string out to client
+- writeln=string ... send string adding configured line termination
+- read ... read all data available on serial port
+- readln ... read single line removing configured line termination. If a full line is not available return empty data.
+
 ## Revision history
 
+- V1.1 added access to Serial (=Serial0), Serial1 and Serial2
 - V1.0 access to GPIO

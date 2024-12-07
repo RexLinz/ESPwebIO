@@ -47,18 +47,18 @@ private:
     HardwareSerial &_serial;
     String _endOfLine = "\r\n";
     String rxBuffer = ""; // receive buffer
-public:
-    espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
     static String help();
     void begin(unsigned long baud) { _serial.begin(baud); };
     void setBaud(unsigned long baud) { _serial.updateBaudRate(baud); };
     void rxPin(uint8_t rxPin) { _serial.setPins(rxPin, -1); };
     void txPin(uint8_t txPin) { _serial.setPins(-1, txPin); };
     void setTerm(String t); // set termination 
-    void print(String s) { _serial.print(s); }; // send string s
-    void println(String s) { _serial.print(s+_endOfLine); }; // ... adding line termination
+    void write(String s) { _serial.print(s); }; // send string s
+    void writeln(String s) { _serial.print(s+_endOfLine); }; // ... adding line termination
     String read();   // read all available data
-    String readln(); // read a line up to (excluding) configured line termination
+    String readln(); // read single line removing configured line termination
+public:
+    espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
     String parse(String command, String value);  // parameters to be determined
 };
 

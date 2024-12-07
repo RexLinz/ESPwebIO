@@ -5,17 +5,18 @@ String espSerial::help()
 {
     static const String helptext = 
         "Help on Serial subsystem\r\n"
-        "\nwriting output\r\n"
-        "  print=text ... as is\r\n"
-        "  println=text ... adding configured line termination\r\n"
-        "\nreading input\r\n"
-        "  read ... return all characters available in buffer\r\n"
         "\nconfiguration\r\n"
         "  begin=baudrate\r\n"
-        "  baud=baudrate\r\n"
-        "  rxPin=pin\r\n"
+        "  setBaud=baudrate\r\n"
         "  txPin=pin\r\n"
+        "  rxPin=pin\r\n"
         "  setTerm=CR|LF|CRLF\r\n"
+        "\nwriting output\r\n"
+        "  write=text ... write out as is\r\n"
+        "  writeln=text ... write out adding configured line termination\r\n"
+        "\nreading input\r\n"
+        "  read ... return all characters available in buffer\r\n"
+        "  readln ... return single line (removing configured line termination)"
         "NOTE: settings default to 8,N,1\r\n";
     return helptext;
 }
@@ -80,10 +81,10 @@ String espSerial::parse(String command, String value)
         _serial.setPins(-1, value.toInt());
     else if (command == "setTerm")
         setTerm(value);
-    else if (command == "print")
-        print(value);
-    else if (command == "println")
-        println(value);
+    else if (command == "write")
+        write(value);
+    else if (command == "writeln")
+        writeln(value);
     else if (command == "read")
         result = read();
     else if (command == "readln")
