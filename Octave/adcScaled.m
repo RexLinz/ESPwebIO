@@ -1,18 +1,19 @@
-% test of raw DAC output
+% test of scaled DAC output
 
 % server web address or host name
+ADC  = "http://WebIO/ADC";
 DAC1 = "http://WebIO/DAC1"; % DAC1 on GPIO pin 25
 DAC2 = "http://WebIO/DAC2"; % DAC2 on GPIO pin 26
 
-% output full scale range square wave on DAC1
-disp("raw DAC output running");
+webwrite(DAC1, "raw", "128");
+webwrite(DAC2, "raw", "128");
+
+webwrite(ADC, "scale", "0.5", "oversampling", "16");
+
+disp("scaled ADC input running");
 disp("  press any key to stop");
 do
-  webwrite(DAC1, "raw", "0");
-  webwrite(DAC2, "raw", "255");
-  pause(1);
-  webwrite(DAC1, "raw", "255");
-  webwrite(DAC2, "raw", "0");
+  webread(ADC, "value", "34,35")
   pause(1);
 until length(kbhit(1)) > 0 % end on any keystroke
 disp("  stopped");
