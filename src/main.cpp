@@ -42,10 +42,10 @@ void handleRoot(AsyncWebServerRequest *request)
 {
     // TODO return main help ans status?
     String message = 
-        "WebIO version 1.2\r\n"
+        "WebIO version 1.3\r\n"
         "available subsystems\r\n"
         "  /GPIO\r\n"
-        "  /Serial, /Serial0, /Serial1, Serial2\r\n"
+        "  /Serial = /Serial0, /Serial1, Serial2\r\n"
         "  /DAC1, /DAC2\r\n"
         "  /ADC\r\n";
     request->send(200, "text/plain", message); // application/json
