@@ -4,7 +4,7 @@
 
 // get the next int value from comma separated list, 
 // remove that from list
-int nextInt(String &list)
+int espUtil::nextInt(String &list)
 {
     int val = list.toInt();
     int n = list.indexOf(',');
@@ -15,10 +15,9 @@ int nextInt(String &list)
     return val;
 }
 
-/*
 // get the next float value from comma separated list, 
 // remove that from list
-float nextFloat(String &list)
+float espUtil::nextFloat(String &list)
 {
     float val = list.toFloat();
     int n = list.indexOf(',');
@@ -28,7 +27,3 @@ float nextFloat(String &list)
         list = "";
     return val;
 }
-*/
-
-// public available objects
-espGPIO webGPIO;

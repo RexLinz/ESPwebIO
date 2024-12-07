@@ -5,21 +5,20 @@
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
-// get the next uint8 value from list, 
-// remove that from list
-int nextInt(String &list);
+// some utility functions which might be useful to several parsers 
+class espUtil
+{
+protected:
+    // get the next uint8 value from list, remove that from list
+    static int nextInt(String &list);
+    // get the next float value from comma separated list, remove that from list
+    static float nextFloat(String &list);
+};
 
-// get the next float value from comma separated list, 
-// remove that from list
-//float nextFloat(String &list);
-
-class espGPIO
+class espGPIO : private espUtil
 {
 private:
     uint8_t savedPinMode[NUM_OUPUT_PINS];
-public:
-    espGPIO(); // initialize
-    String help(); // return help string
     // use pin as ...
     String modeOutput(uint8_t pin);          // digital output
     String modeOutputOpenDrain(uint8_t pin); // digital open drain output
@@ -34,6 +33,9 @@ public:
     String toggle(uint8_t pin); // toggle output
     // digital input
     String state(uint8_t pin);  // read state
+public:
+    espGPIO(); // initialize
+    String help(); // return help string
     String parse(String command, String value);
 };
 
@@ -69,26 +71,6 @@ extern espSerial webSerial2;
 // TODO future classes to be implemented
 /*
 
-// ESP32 has two ADC's, but ADC2 is blocked by WiFi!
-class espADC
-{
-private:
-    ADC &_adc;
-    uint _n; // oversampling (sum n values)
-    int _offset = 0;
-    float _scale = 1.0f;
-public:
-    void oversampling(uint n);
-    // read raw data from pin x (after summing n readings)
-    int raw(uint8_t pin);
-    // scaled input TODO manage per pin
-    void offset(int o) { _offset = o; };
-    void scale(float s) {_scale = s; };
-    float value(uint8_t pin) { return ((raw(pin)-_offset) * _scale};
-    String parse(); // parameters to be determined
-};
-espADC webADC1(ADC1);
-
 // ESP32 has two DAC's
 class espDAC
 {
@@ -108,6 +90,26 @@ public:
 
 espDAC webDAC1(DAC1);
 espDAC webDAC2(DAC2);
+
+// ESP32 has two ADC's, but ADC2 is blocked by WiFi!
+class espADC
+{
+private:
+    ADC &_adc;
+    uint _n; // oversampling (sum n values)
+    int _offset = 0;
+    float _scale = 1.0f;
+public:
+    void oversampling(uint n);
+    // read raw data from pin x (after summing n readings)
+    int raw(uint8_t pin);
+    // scaled input TODO manage per pin
+    void offset(int o) { _offset = o; };
+    void scale(float s) {_scale = s; };
+    float value(uint8_t pin) { return ((raw(pin)-_offset) * _scale};
+    String parse(); // parameters to be determined
+};
+espADC webADC1(ADC1);
 
 class espI2C
 {
