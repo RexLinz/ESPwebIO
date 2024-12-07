@@ -73,7 +73,9 @@ Sending and receiving from serial lines (UART)
 
 #### Serial configuration
 
-- begin=baud   ... initialize. Equal to Serial.begin(baudrate) on Arduino. **NOTE** at the moment serial settings are fixed to 8N1
+- begin=baud   ... initialize.  
+Equal to Serial.begin(baudrate) on Arduino.  
+**NOTE** at the moment serial settings are fixed to 8N1
 - setBaud=baud ... change baud rate. Equal to Serial.setBaud(baudrate) on Arduino
 - txPin=pin
 - rxPin=pin
