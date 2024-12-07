@@ -27,11 +27,11 @@ If a query is returning value(s) this response will be JSON formatted for easy p
 - `/status` print version, memory and WiFi information
 - [/GPIO](#gpio) access to GPIO (digital pin configuration, input and output)
 - [/Serial](#serial) sending and receiving from serial lines (UART)
+- [/DAC](#dac) digital to analog converter output
 
 ### Planned in future
 
 - `/ADC` reading analog input
-- `/DAC` set analog output
 - `/I2C` IO via I2C
 - `/SPI` IO via SPI
 - `/PWM` PWM output
@@ -90,7 +90,21 @@ Equal to Serial.begin(baudrate) on Arduino.
 - read ... read all data available on serial port
 - readln ... read single line removing configured line termination. If a full line is not available return empty data.
 
+### DAC
+
+#### DAC configuration
+
+- scale=float ... set scaling (default 1.0)
+- offset=float ... set offset (default 0.0)
+- disable ... disable DAC function on this channel (pin)
+
+#### DAC output
+
+- raw=uint_8 ... write out as is
+- value=float ... write out scaled by round(float*scale+offset)
+
 ## Revision history
 
+- V1.2 added digital to analog converters DAC1, DAC2
 - V1.1 added access to Serial (=Serial0), Serial1 and Serial2
 - V1.0 access to GPIO
