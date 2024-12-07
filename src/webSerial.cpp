@@ -49,12 +49,14 @@ String espSerial::readln()
 {
     char c;
     int pos;
+    if (_endOfLine.length() == 0)
+        return read(); // no end of line configured
     while (((pos=rxBuffer.indexOf(_endOfLine))<0) && (_serial.available()))
     {   // TODO make more efficient
         _serial.read(&c, 1);
         rxBuffer += c;
     }
-    if (pos<0) 
+    if (pos<0) // still no end of line after reading all input available 
         return "";
     String s = rxBuffer.substring(0, pos); // all up to configured end of line 
     rxBuffer = rxBuffer.substring(pos + _endOfLine.length()); // remove part read
