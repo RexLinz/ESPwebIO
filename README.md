@@ -28,10 +28,10 @@ If a query is returning value(s) this response will be JSON formatted for easy p
 - [/GPIO](#gpio) access to GPIO (digital pin configuration, input and output)
 - [/Serial](#serial) sending and receiving from serial lines (UART)
 - [/DAC](#dac) digital to analog converter output
+- [/ADC](#adc) reading analog to digital converter input
 
 ### Planned in future
 
-- `/ADC` reading analog input
 - `/I2C` IO via I2C
 - `/SPI` IO via SPI
 - `/PWM` PWM output
@@ -103,8 +103,30 @@ Equal to Serial.begin(baudrate) on Arduino.
 - raw=uint_8 ... write out as is
 - value=float ... write out scaled by round(float*scale+offset)
 
+### ADC
+
+#### ADC configuration
+
+##### General settings
+
+- attenuation=0dB|2.5dB|6dB|11dB ... set input attenuation, default is 6dB  
+resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V  
+**NOTE** ADC show serious nonlinearity in 11dB configuration above 2.5 V
+- oversampling=n ... return sum of n samples per read (noise reduction)
+
+##### Configuration for reading scaled output
+
+- scale=float ... set scaling (default 1.0)
+- offset=float ... set offset (default 0.0)
+
+#### reading ADC input
+
+- raw=pins ... read as is (uint)
+- value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
+
 ## Revision history
 
+- V1.3 added analog to digital converter ADC
 - V1.2 added digital to analog converters DAC1, DAC2
 - V1.1 added access to Serial (=Serial0), Serial1 and Serial2
 - V1.0 access to GPIO

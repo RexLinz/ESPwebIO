@@ -7,11 +7,11 @@ String espADC::help()
         "\ngeneral settings\r\n"
         "  attenuation=0dB/2.5dB/6dB/11dB (FSR about 1.0/1.35/1.9/3.3 V)\r\n"
         "  oversampling=n ... sum n readings per call\r\n"
-        "\nconfiguration for scaled output using value=(raw-offset)*scale\r\n"
+        "\nconfiguration for reading scaled output\r\n"
         "  scale=float ... set scaling (default 1.0)\r\n"
         "  offset=float ... set offset (default 0.0)\r\n"
         "\nreading input\r\n"
-        "  raw=pins ... read as is (uint_16)\r\n"
+        "  raw=pins ... read as is (uint)\r\n"
         "  value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
     return helptext;
 }
