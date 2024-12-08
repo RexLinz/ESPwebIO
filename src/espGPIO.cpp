@@ -175,8 +175,16 @@ String espGPIO::parse(String command, String numberList)
             temp = state(pin);
         else if (command == "output")
             temp = modeOutput(pin);
+        else if (command == "outputOpenDrain")
+            temp = modeOutputOpenDrain(pin);
         else if (command == "input")
             temp = modeInput(pin);
+        else if (command == "inputPullUp")
+            temp = modeInputPullUp(pin);
+        else if (command == "inputPullDown")
+            temp = modeInputPullDown(pin);
+        else if (command == "analog")
+            temp = modeAnalog(pin);
         else
             temp = "invalid keyword " + command;
         // assemble result string
