@@ -22,6 +22,10 @@ Multiple requests to a single subsystem could be done in one request and will be
 
 If a query is returning value(s) this response will be JSON formatted for easy processing in the client's application. Web browsers will show this in a nice way as well.
 
+### specifying pin(s)
+
+Commands where **pins** have to be specified accept a list of comma separated **GPIO** numbers (not ESP chip or development kit pin numbers) e.g. <http://webIO/GPIO?state=22,23> reading state of GPIO pins 22 and 23
+
 ### Subsystems available right now
 
 - `/status` print version, memory and WiFi information
@@ -54,10 +58,6 @@ Access to GPIO (digital pin configuration, input and output)
 
 - set/clear/toggle=pins ... new digital pin state
 - state=pins ... query digital pin state
-
-#### specifying pin(s)
-
-With string **pins** is a list of comma separated **GPIO** numbers (not ESP chip or development kit pin numbers) e.g. <http://webIO/GPIO?state=22,23> reading state of GPIO pins 22 and 23
 
 #### return value
 
@@ -107,6 +107,8 @@ Equal to Serial.begin(baudrate) on Arduino.
 
 #### ADC configuration
 
+**Note** at the moment all configuration settings apply to all ADC readings. In future this might change to be managed per pin to allow more flexibility.
+
 ##### General settings
 
 - attenuation=0dB|2.5dB|6dB|11dB ... set input attenuation, default is 6dB  
@@ -124,9 +126,15 @@ resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V
 - raw=pins ... read as is (uint)
 - value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
 
+## known issues / ideas for further improvements
+
+- At the moment some commands simply ignore invalid input instead of returning error codes
+- There is no check of pin numbers or pin capabilities. For example some GPIO pins are input only and the ADC could not be used at all pins as well.
+- Create variant accepting connection via serial or other stream (e.g. TCP, UDP)
+
 ## Revision history
 
-- V1.3 added analog to digital converter ADC
-- V1.2 added digital to analog converters DAC1, DAC2
-- V1.1 added access to Serial (=Serial0), Serial1 and Serial2
-- V1.0 access to GPIO
+- V1.3 added analog to digital converter /ADC
+- V1.2 added digital to analog converters /DAC1, /DAC2
+- V1.1 added access to /Serial (=/Serial0), /Serial1 and /Serial2
+- V1.0 access to /GPIO
