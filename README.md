@@ -10,7 +10,7 @@ The intention with this program is to allow simple access to IO's on ESP devices
 My usecase is using outputs on an ESP32 to be controlled via WiFi from GNU Octave (similar to Matlab) for automated test and measurement. In GNU Octave and Matlab the first example above will read as below.
 
 > `webread("http://WebIO/GPIB?state=1,22")`
->
+or
 > `webread("http://WebIO/GPIB", "state", "1,22")`
 
 **Note** in GNU Octave and Matlab you can code the arguments within the URL or specify as key / value pairs, so both are equivalent.
@@ -22,7 +22,7 @@ Multiple requests to a single subsystem could be done in one request and will be
 
 If a query is returning value(s) this response will be JSON formatted for easy processing in the client's application. Web browsers will show this in a nice way as well.
 
-### specifying pin(s)
+### Specifying pin(s)
 
 Commands where **pins** have to be specified accept a list of comma separated **GPIO** numbers (not ESP chip or development kit pin numbers) e.g. <http://webIO/GPIO?state=22,23> reading state of GPIO pins 22 and 23
 
@@ -55,12 +55,12 @@ Access to GPIO (digital pin configuration, input and output)
 - analog=pins ... analog input mode
 - mode=pins ... query pin mode
 
-#### digital IO
+#### Digital IO
 
 - set/clear/toggle=pins ... new digital pin state
 - state=pins ... query digital pin state
 
-#### return value
+#### Return value
 
 Commands writing data return 1 as result if successful, 0 on error
 
@@ -84,7 +84,7 @@ Equal to Serial.begin(baudrate) on Arduino.
 
 **NOTE** if accessing a serial port on different pins than default set txPin and rxPin before calling begin, e.g. <http://WebIO/Serial1?txPin=23&rxPin=22&begin(115200)> to configure Serial1 using txPin 23, rxPin 22 at 115200 baud, 8N1.
 
-#### reading and writing to Serial
+#### Reading and writing to Serial
 
 - write=string ... send string out to client
 - writeln=string ... send string adding configured line termination
@@ -122,12 +122,12 @@ resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V
 - scale=float ... set scaling (default 1.0)
 - offset=float ... set offset (default 0.0)
 
-#### reading ADC input
+#### Reading ADC input
 
 - raw=pins ... read as is (uint)
 - value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
 
-## known issues / ideas for further improvements
+## Known issues / ideas for further improvements
 
 - At the moment some commands simply ignore invalid input instead of returning error codes
 - There is no check of pin numbers or pin capabilities. For example some GPIO pins are input only and the ADC could not be used at all pins as well.
