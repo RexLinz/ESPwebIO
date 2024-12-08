@@ -28,7 +28,8 @@ Commands where **pins** have to be specified accept a list of comma separated **
 
 ### Subsystems available right now
 
-- `/status` print version, memory and WiFi information
+- `/` ... version and overview of implemented subsystems
+- `/status` return system status: memory and WiFi information
 - [/GPIO](#gpio) access to GPIO (digital pin configuration, input and output)
 - [/Serial](#serial) sending and receiving from serial lines (UART)
 - [/DAC](#dac) digital to analog converter output
