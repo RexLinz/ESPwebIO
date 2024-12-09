@@ -1,4 +1,5 @@
 % test WebIO's serial IO
+% sending to / receiving from console
 
 % server web address or host name
 serial0 = "http://WebIO/Serial0"; % serial interface to host
