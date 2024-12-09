@@ -41,7 +41,6 @@ void connectWiFi()
 #define WEBIO_VERSION "WebIO version 1.3.1\r\n"
 void handleRoot(AsyncWebServerRequest *request) 
 {
-    // TODO return main help ans status?
     String message = 
         WEBIO_VERSION
         "available subsystems\r\n"
