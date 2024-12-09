@@ -38,11 +38,12 @@ void connectWiFi()
     Serial.println();
 }
 
+#define WEBIO_VERSION "WebIO version 1.3.1\r\n"
 void handleRoot(AsyncWebServerRequest *request) 
 {
     // TODO return main help ans status?
     String message = 
-        "WebIO version 1.3\r\n"
+        WEBIO_VERSION
         "available subsystems\r\n"
         "  /status ... returning system status\r\n"
         "  /GPIO\r\n"
@@ -57,6 +58,7 @@ void handleRoot(AsyncWebServerRequest *request)
 void handleStatus(AsyncWebServerRequest *request)
 {
     String message = 
+        WEBIO_VERSION
         "Free heap " + String(ESP.getFreeHeap()) + " bytes, largest block " +String(ESP.getMaxAllocHeap()) + " bytes\r\n"
         "Network \"" + WiFi.SSID() + "\" RSSI " + String(WiFi.RSSI()) + " dB\r\n";
     request->send(200, "text/plain", message); // application/json
