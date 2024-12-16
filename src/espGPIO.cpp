@@ -1,11 +1,5 @@
 #include "webIO.h"
 
-espGPIO::espGPIO()
-{
-    for (int i=0; i<NUM_OUPUT_PINS; i++)
-        savedPinMode[i] = INPUT; // after reset we assume it is input
-}
-
 String espGPIO::help()
 {
     static const String helptext = 
@@ -22,6 +16,12 @@ String espGPIO::help()
         "  http://webIO/GPIO/state=22,23 reading state of GPIO pins 22 and 23\r\n"
         "\ncommands writing data return 1 as result if successful, 0 on error";
     return helptext;
+}
+
+espGPIO::espGPIO()
+{
+    for (int i=0; i<SOC_GPIO_PIN_COUNT; i++)
+        savedPinMode[i] = INPUT; // after reset we assume it is input
 }
 
 String espGPIO::set(uint8_t pin)
