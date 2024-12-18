@@ -108,7 +108,12 @@ Equal to Serial.begin(baudrate) on Arduino.
 
 #### ADC configuration
 
-**Note** at the moment all configuration settings apply to all ADC readings. In future this might change to be managed per pin to allow more flexibility.
+Attenuation, oversampling, offset and scale apply to a list of pins to be configured before.
+For these commands a list of values or a single value (to be applied to all) could be specified, e.g.
+
+- pins=36,39&attenuation=2.5dB,6dB ... set attenuation on input 36 to 2.5dB, input 39 to 6dB
+- pins=36,39&scale=2.5 ... set scale on inputs 36 and 39 to 2.0
+- pins=pinlist ... set list of pins, separated by commas
 
 ##### General settings
 
@@ -135,6 +140,7 @@ resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V
 
 ## Revision history
 
+- V1.4 ADC configuration per pin
 - V1.3 added analog to digital converter /ADC
 - V1.2 added digital to analog converters /DAC1, /DAC2
 - V1.1 added access to /Serial (=/Serial0), /Serial1 and /Serial2
