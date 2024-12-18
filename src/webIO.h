@@ -13,12 +13,17 @@ protected:
     static int nextInt(String &list);
     // get the next float value from comma separated list, remove that from list
     static float nextFloat(String &list);
+    // get the next String value from comma separated list, remove that from list
+    static String nextString(String &list);
 };
+
+// number of pins to manage
+//#define NUM_ESP_PINS SOC_GPIO_PIN_COUNT
 
 class espGPIO : private espUtil
 {
 private:
-    uint8_t savedPinMode[NUM_OUPUT_PINS];
+    uint8_t savedPinMode[SOC_GPIO_PIN_COUNT]; // 0..39
     // use pin as ...
     String modeOutput(uint8_t pin);          // digital output
     String modeOutputOpenDrain(uint8_t pin); // digital open drain output
@@ -96,22 +101,36 @@ extern espDAC webDAC2;
 class espADC : private espUtil
 {
 private:
-    uint16_t oversampling=1; // oversampling (sum n values)
-    adc_attenuation_t attenuation = ADC_6db; // best performance
-    float offset = 0.0f;
-    float scale = 1.0f;
-    void setOversampling(uint16_t n) { oversampling = n; };
-    void setAttenuation(String s);
-    // read raw data from pin x (after summing n readings)
+    String pins=""; // list of pins for commands working on multiple inputs
+
+//    adc_attenuation_t attenuation = ADC_6db; // best performance
+//    void setAttenuation(String a); // all channels
+//    void setAttenuation(uint8_t pin, String a); // specific channel
+    adc_attenuation_t attenuationValue(String a); // convert string to enum
+    void setAttenuation(String pinList, String valueList); // multiple channels
+
+//    uint16_t oversampling=1; // oversampling (sum n values)
+//    void setOversampling(uint16_t n) { oversampling = n; };
+    uint16_t oversampling[SOC_GPIO_PIN_COUNT];
+    void setOversampling(String pinList, String valueList);
+
+//    float offset = 0.0f;
+//    void setOffset(float o) { offset = o; };
+    float offset[SOC_GPIO_PIN_COUNT];
+    void setOffset(String pinList, String valueList);
+
+//    float scale = 1.0f;
+//    void setScale(float s) { scale = s; };
+    float scale[SOC_GPIO_PIN_COUNT];
+    void setScale(String pinList, String valueList);
+
+    // read raw data from pin x (after summing n readings as configured with oversampling)
     uint32_t getRaw(uint8_t pin);
     // scaled input 
-    // TODO manage per pin
-    void setOffset(float o) { offset = o; };
-    void setScale(float s) { scale = s; };
-    float getValue(uint8_t pin) { return ((getRaw(pin)-offset) * scale); };
+    float getValue(uint8_t pin) { return ((getRaw(pin)-offset[pin]) * scale[pin]); };
     String parseList(String command, String numberList);
 public:
-    espADC();
+    espADC(adc_attenuation_t att=ADC_6db); // default, best performance of ADC
     String help();
     String parse(String command, String value); // parameters to be determined
 };

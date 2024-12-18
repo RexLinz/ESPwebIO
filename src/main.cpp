@@ -38,7 +38,7 @@ void connectWiFi()
     Serial.println();
 }
 
-#define WEBIO_VERSION "WebIO version 1.3.1\r\n"
+#define WEBIO_VERSION "WebIO version 1.4.0\r\n"
 void handleRoot(AsyncWebServerRequest *request) 
 {
     String message = 

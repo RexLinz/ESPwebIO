@@ -7,6 +7,7 @@ DAC2 = "http://WebIO/DAC2"; % DAC2 on GPIO pin 26
 
 webwrite(DAC1, "raw", "200");
 webwrite(DAC2, "raw", "100");
+webwrite(ADC, "pins", "34,35", "attenuation", "11dB,6dB");
 
 disp("raw ADC input running");
 disp("  press any key to stop");

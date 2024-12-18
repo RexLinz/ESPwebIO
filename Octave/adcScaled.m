@@ -8,7 +8,12 @@ DAC2 = "http://WebIO/DAC2"; % DAC2 on GPIO pin 26
 webwrite(DAC1, "raw", "128");
 webwrite(DAC2, "raw", "128");
 
-webwrite(ADC, "scale", "0.5", "oversampling", "16");
+webwrite(ADC,
+  "pins", "34,35",
+  "attenuation", "11dB", % both channels
+  "scale", "0.5,0.25", % pin 35 lower scale
+  "oversampling", "16,32" % but higher oversampling (should compensate)
+);
 
 disp("scaled ADC input running");
 disp("  press any key to stop");
