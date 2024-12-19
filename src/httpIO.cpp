@@ -6,7 +6,7 @@
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
-void handleRoot(AsyncWebServerRequest *request) 
+void httpRoot(AsyncWebServerRequest *request) 
 {
     String message = 
         WEBIO_VERSION
@@ -21,7 +21,7 @@ void handleRoot(AsyncWebServerRequest *request)
 }
 
 // display status information
-void handleStatus(AsyncWebServerRequest *request)
+void httpStatus(AsyncWebServerRequest *request)
 {
     String message = 
         WEBIO_VERSION
@@ -31,7 +31,7 @@ void handleStatus(AsyncWebServerRequest *request)
 }
 
 // handle /GPIO requests
-void handleGPIO(AsyncWebServerRequest *request)
+void httpGPIO(AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
@@ -53,7 +53,7 @@ void handleGPIO(AsyncWebServerRequest *request)
 }
 
 // async serial interfaces
-void handleSerial(espSerial &serial, AsyncWebServerRequest *request)
+void httpSerial(espSerial &serial, AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
@@ -76,26 +76,26 @@ void handleSerial(espSerial &serial, AsyncWebServerRequest *request)
 }
 
 // handle /Serial0 requests (equals /Serial)
-void handleSerial0(AsyncWebServerRequest *request)
+void httpSerial0(AsyncWebServerRequest *request)
 {
-    handleSerial(webSerial0, request);
+    httpSerial(webSerial0, request);
 }
 
 // handle /Serial1 requests
-void handleSerial1(AsyncWebServerRequest *request)
+void httpSerial1(AsyncWebServerRequest *request)
 {
-    handleSerial(webSerial1, request);
+    httpSerial(webSerial1, request);
 }
 
 // handle /Serial2 requests
-void handleSerial2(AsyncWebServerRequest *request)
+void httpSerial2(AsyncWebServerRequest *request)
 {
-    handleSerial(webSerial2, request);
+    httpSerial(webSerial2, request);
 }
 
 // handle body data, forward to Serialx output
 // TODO handle actual serial output (not just debugging)
-void handleBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
+void httpBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
     if(!index){
         Serial.print("URL: " + request->url());
@@ -111,7 +111,7 @@ void handleBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_
 }
 
 // handle DAC requests
-void handleDAC(espDAC &dac, AsyncWebServerRequest *request)
+void httpDAC(espDAC &dac, AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
@@ -132,18 +132,18 @@ void handleDAC(espDAC &dac, AsyncWebServerRequest *request)
     }
 }
 
-void handleDAC1(AsyncWebServerRequest *request)
+void httpDAC1(AsyncWebServerRequest *request)
 {
-    handleDAC(webDAC1, request);
+    httpDAC(webDAC1, request);
 }
 
-void handleDAC2(AsyncWebServerRequest *request)
+void httpDAC2(AsyncWebServerRequest *request)
 {
-    handleDAC(webDAC2, request);
+    httpDAC(webDAC2, request);
 }
 
 // handle ADC requests
-void handleADC(AsyncWebServerRequest *request)
+void httpADC(AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
@@ -166,7 +166,7 @@ void handleADC(AsyncWebServerRequest *request)
 
 // display some debugging information about any
 // request not handled else
-void handleNotFound(AsyncWebServerRequest *request) 
+void httpNotFound(AsyncWebServerRequest *request) 
 {
     String message = "url not found\n\n";
     message += "URL: "; message += request->url();
@@ -183,28 +183,28 @@ void handleNotFound(AsyncWebServerRequest *request)
 void startHTTP()
 {
     // application version and general help 
-    server.on("/", handleRoot);
+    server.on("/", httpRoot);
     // .../status -> display some status information
-    server.on("/status", handleStatus);
+    server.on("/status", httpStatus);
     // .../GPIO -> access digital IO pins
-    server.on("/GPIO", handleGPIO);
+    server.on("/GPIO", httpGPIO);
     // async serial interfaces
-    server.on("/Serial",  handleSerial0); // Serial equals Serial0
-    server.on("/Serial0", handleSerial0);
-    server.on("/Serial1", handleSerial1);
-    server.on("/Serial2", handleSerial2);
+    server.on("/Serial",  httpSerial0); // Serial equals Serial0
+    server.on("/Serial0", httpSerial0);
+    server.on("/Serial1", httpSerial1);
+    server.on("/Serial2", httpSerial2);
     // digital to analog converters
-    server.on("/DAC1", handleDAC1);
-    server.on("/DAC2", handleDAC2);
+    server.on("/DAC1", httpDAC1);
+    server.on("/DAC2", httpDAC2);
     // analog to digital converter
-    server.on("/ADC", handleADC);
+    server.on("/ADC", httpADC);
 
     // body data handling for binary IO to serial
     // https://github.com/me-no-dev/ESPAsyncWebServer#body-data-handling
     // https://github.com/me-no-dev/ESPAsyncWebServer/issues/123
-    server.onRequestBody(handleBody);  
+    server.onRequestBody(httpBody);  
     
     // ... not found -> display error message with debugging information
-    server.onNotFound(handleNotFound);
+    server.onNotFound(httpNotFound);
     server.begin();    
 }
