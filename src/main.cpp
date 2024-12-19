@@ -1,14 +1,16 @@
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
 #include <ESPmDNS.h>
-#include "networkHome.h" // defines for home network
+//#include "networkHome.h" // defines for home network
 //#include "networkOffice.h" // defines for office network
 #include "webIO.h"
 
 // if none of the includes defining network credentials, set up here
+// if CREATE_AP is nonzero, create our own access point
 #ifndef _NETWORK_H_
-#define WIFI_SSID "WiFiSSID"
-#define WIFI_PASS "WiFiPASS"
+#define CREATE_AP 1
+#define WIFI_SSID "MyWIFI"
+#define WIFI_PASS "MyWIFIpass"
 #endif
 
 // this application's host name to publish on network
@@ -20,6 +22,27 @@ AsyncWebServer server(80);
 // connect to WiFi network
 void connectWiFi()
 {
+#if CREATE_AP>0
+    Serial.print("creating access point " + String(WIFI_SSID));
+    WiFi.setHostname(WIFI_HOST);
+//    WiFi.mode(WIFI_MODE_AP); // access point only
+    bool success;
+//    success = WiFi.softAP(WIFI_SSID); // access point without password
+    success = WiFi.softAP(WIFI_SSID, WIFI_PASS); // using WiFi password
+    if (success)
+    {
+        WiFi.softAPsetHostname(WIFI_HOST);
+        Serial.print(", IP Address ");
+        Serial.print(WiFi.softAPIP()); // typically 192.168.4.1
+        // publish hostname
+        if (MDNS.begin(WIFI_HOST)) {
+            Serial.print(", Hostname ");
+            Serial.print(WiFi.getHostname());
+        }
+    }
+    else 
+        Serial.print(" FAILED");
+#else
     Serial.print("connecting to WiFi ");
     WiFi.setHostname(WIFI_HOST);
     WiFi.begin(WIFI_SSID, WIFI_PASS);
@@ -28,13 +51,13 @@ void connectWiFi()
         Serial.print(".");
     }
     Serial.print("\rIP Address ");
-    Serial.print(WiFi.localIP());
-    
+    Serial.print(WiFi.localIP());    
     // publish hostname
     if (MDNS.begin(WIFI_HOST)) {
         Serial.print(", Hostname ");
         Serial.print(WiFi.getHostname());
     }
+#endif
     Serial.println();
 }
 
