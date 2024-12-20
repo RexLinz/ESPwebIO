@@ -8,7 +8,7 @@ AsyncWebServer server(80);
 
 void httpRoot(AsyncWebServerRequest *request) 
 {
-    request->send(200, "text/plain", espUtil::help());
+    request->send(200, "text/plain", espUtil::help);
 }
 
 // display status information
@@ -24,7 +24,7 @@ void httpGPIO(AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
-        request->send(200, "text/plain", webGPIO.help());
+        request->send(200, "text/plain", webGPIO.help);
     else 
     { // process all arguments from request
         for (uint8_t i = 0; i < request->args(); i++) 
@@ -41,12 +41,13 @@ void httpGPIO(AsyncWebServerRequest *request)
     }
 }
 
-// async serial interfaces
+// generic handler for all async serial interfaces,
+// actual interfaces redirecting to here
 void httpSerial(espSerial &serial, AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
-        request->send(200, "text/plain", serial.help());
+        request->send(200, "text/plain", serial.help);
     // process all arguments from request
     else 
     {
@@ -83,6 +84,7 @@ void httpSerial2(AsyncWebServerRequest *request)
 }
 
 // handle body data, forward to Serialx output
+// function is untested, as I have no client program which will send body content
 // TODO handle actual serial output (not just debugging)
 void httpBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total)
 {
@@ -104,7 +106,7 @@ void httpDAC(espDAC &dac, AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
-        request->send(200, "text/plain", dac.help());
+        request->send(200, "text/plain", dac.help);
     else 
     { // process all arguments from request
         for (uint8_t i = 0; i < request->args(); i++) 
@@ -136,7 +138,7 @@ void httpADC(AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
-        request->send(200, "text/plain", webADC.help());
+        request->send(200, "text/plain", webADC.help);
     else 
     { // process all arguments from request
         for (uint8_t i = 0; i < request->args(); i++) 
@@ -169,6 +171,7 @@ void httpNotFound(AsyncWebServerRequest *request)
     request->send(200, "text/plain", message);
 }
 
+// set up callback functions and start the server
 void startHTTP()
 {
     // application version and general help 

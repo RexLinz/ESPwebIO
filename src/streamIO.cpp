@@ -6,7 +6,7 @@ String streamIO::GPIO(String args)
     Serial.println(args); // for debugging of keyboard input
     String message = "";
     if (args.length() == 0)
-        return webGPIO.help(); // plain text
+        return webGPIO.help; // plain text
     while (args.length() > 0)
     {
         // extract next argument from list
@@ -70,7 +70,7 @@ void streamIO::parse(Stream & s)
         args = "";
     }
     if (url == "/")
-        s.print(espUtil::help());
+        s.print(espUtil::help);
     else if (url == "/status")
         s.print(espUtil::status());
     else if (url == "/GPIO")

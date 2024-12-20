@@ -14,7 +14,7 @@ class streamIO : private espUtil
 private:
     String _endOfLine;
     String rxBuffer;
-    String streamIO::GPIO(String args);
+    String GPIO(String args);
 public:
     streamIO(String termination="\r\n") : _endOfLine(termination) {};
     void setTerm(String termination) { _endOfLine = termination; };
