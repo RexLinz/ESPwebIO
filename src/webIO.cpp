@@ -47,7 +47,7 @@ String espUtil::nextString(String &list, String delim)
     return val;
 }
 
-String espUtil::help()
+const String espUtil::help()
 {
     String message = 
         WEBIO_VERSION
