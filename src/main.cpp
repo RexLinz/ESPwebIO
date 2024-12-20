@@ -5,6 +5,7 @@
 //#include "networkOffice.h" // defines for office network
 #include "webIO.h"
 #include "httpIO.h"
+#include "streamIO.h"
 
 // if none of the includes defining network credentials, set up here
 // if CREATE_AP is nonzero, create our own access point
@@ -17,7 +18,7 @@
 // this application's host name to publish on network
 #define WIFI_HOST "WebIO"
 
-// connect to WiFi network
+// connect to WiFi network or create access point
 void connectWiFi()
 {
 #if CREATE_AP>0
@@ -71,11 +72,10 @@ void setup()
         Serial.read(); // clear input
 
     connectWiFi(); // connect to WiFi network or create access point
-    startHTTP(); // start parsing of http requests
+    startHTTP();   // start parsing of http requests
 }
 
 void loop() 
 {
-    while (1)
-        ; // empty main loop, all is handled in http server
+    webStream.parse(Serial); // should be able to parse from TCP and UDP as well
 }
