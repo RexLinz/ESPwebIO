@@ -1,6 +1,6 @@
 #include "webIO.h"
 
-String espADC::help()
+const String espADC::help()
 {
     static const String helptext = 
         "Help on ADC subsystem\r\n"

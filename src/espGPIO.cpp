@@ -1,6 +1,6 @@
 #include "webIO.h"
 
-String espGPIO::help()
+const String espGPIO::help()
 {
     static const String helptext = 
         "Help on GPIO subsystem\r\n"
@@ -14,7 +14,7 @@ String espGPIO::help()
         "  mode=pins ... query pin mode\r\n"
         "\npins is a list of comma separated GPIO numbers, e.g.\r\n"
         "  http://webIO/GPIO/state=22,23 reading state of GPIO pins 22 and 23\r\n"
-        "\ncommands writing data return 1 as result if successful, 0 on error";
+        "\ncommands writing data return 1 as result if successful, 0 on error\r\n";
     return helptext;
 }
 

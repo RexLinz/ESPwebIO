@@ -1,7 +1,7 @@
 #include "webIO.h"
 
 // TODO send out message body of POST commands
-String espSerial::help()
+const String espSerial::help()
 {
     static const String helptext = 
         "Help on Serial subsystem\r\n"

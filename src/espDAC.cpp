@@ -3,7 +3,7 @@
 // arduino like interface does not distinguish ADC1 and ADC2
 espADC webADC;
 
-String espDAC::help()
+const String espDAC::help()
 {
     static const String helptext = 
         "Help on DAC subsystem\r\n"
