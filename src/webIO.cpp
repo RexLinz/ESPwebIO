@@ -47,9 +47,7 @@ String espUtil::nextString(String &list, String delim)
     return val;
 }
 
-const String espUtil::help()
-{
-    String message = 
+const String espUtil::help = 
         WEBIO_VERSION
         "available subsystems\r\n"
         "  /status ... returning system status\r\n"
@@ -58,8 +56,6 @@ const String espUtil::help()
         "  /DAC1, /DAC2\r\n"
         "  /ADC\r\n"
         "requesting any subsystem without further parameters will return subsystem's help\r\n";
-    return message;
-}
 
 String espUtil::status()
 {

@@ -18,7 +18,7 @@ protected:
     // get the next String value from separated list, remove that from list
     static String nextString(String &list, String delim=",");
 public:
-    static const String help(); // root help
+    static const String help; // root help
     static String status(); // ESP status without WiFi
 };
 
@@ -43,7 +43,7 @@ private:
     String state(uint8_t pin);  // read state
 public:
     espGPIO(); // initialize
-    static const String help(); // return help string
+    static const String help; // return help string
     String parse(String command, String value);
 };
 
@@ -68,7 +68,7 @@ private:
     String readln(); // read single line removing configured line termination
 public:
     espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
-    static const String help();
+    static const String help;
     String parse(String command, String value);
 };
 
@@ -93,7 +93,7 @@ private:
     void disable() { dacDisable(dacPin); };
 public:
     espDAC(uint8_t pin) : dacPin(pin) {};
-    static const String help();
+    static const String help;
     String parse(String command, String value);
 };
 
@@ -134,7 +134,7 @@ private:
     String parseList(String command, String numberList);
 public:
     espADC(adc_attenuation_t att=ADC_6db); // default, best performance of ADC
-    static const String help();
+    static const String help;
     String parse(String command, String value); // parameters to be determined
 };
 extern espADC webADC;

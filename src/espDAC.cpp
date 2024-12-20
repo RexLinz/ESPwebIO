@@ -3,19 +3,15 @@
 // arduino like interface does not distinguish ADC1 and ADC2
 espADC webADC;
 
-const String espDAC::help()
-{
-    static const String helptext = 
-        "Help on DAC subsystem\r\n"
-        "\nconfiguration for scaled output using raw=round(value*scale+offset)\r\n"
-        "  scale=float ... set scaling (default 1.0)\r\n"
-        "  offset=float ... set offset (default 0.0)\r\n"
-        "  disable ... disable DAC function on this channel (pin)\r\n"
-        "\nwriting output\r\n"
-        "  raw=uint_8 ... write out as is\r\n"
-        "  value=float ... write out scaled round(float*scale+offset)\r\n";
-    return helptext;
-}
+const String espDAC::help = 
+    "Help on DAC subsystem\r\n"
+    "\nconfiguration for scaled output using raw=round(value*scale+offset)\r\n"
+    "  scale=float ... set scaling (default 1.0)\r\n"
+    "  offset=float ... set offset (default 0.0)\r\n"
+    "  disable ... disable DAC function on this channel (pin)\r\n"
+    "\nwriting output\r\n"
+    "  raw=uint_8 ... write out as is\r\n"
+    "  value=float ... write out scaled round(float*scale+offset)\r\n";
 
 void espDAC::setRaw(uint8_t value)
 {

@@ -1,25 +1,21 @@
 #include "webIO.h"
 
 // TODO send out message body of POST commands
-const String espSerial::help()
-{
-    static const String helptext = 
-        "Help on Serial subsystem\r\n"
-        "\nconfiguration\r\n"
-        "  begin=baudrate\r\n"
-        "  setBaud=baudrate\r\n"
-        "  txPin=pin\r\n"
-        "  rxPin=pin\r\n"
-        "  setTerm=CR|LF|CRLF\r\n"
-        "\nwriting output\r\n"
-        "  write=text ... write out as is\r\n"
-        "  writeln=text ... write out adding configured line termination\r\n"
-        "\nreading input\r\n"
-        "  read ... return all characters available in buffer\r\n"
-        "  readln ... return single line (removing configured line termination)"
-        "NOTE: settings default to 8,N,1\r\n";
-    return helptext;
-}
+const String espSerial::help = 
+    "Help on Serial subsystem\r\n"
+    "\nconfiguration\r\n"
+    "  begin=baudrate\r\n"
+    "  setBaud=baudrate\r\n"
+    "  txPin=pin\r\n"
+    "  rxPin=pin\r\n"
+    "  setTerm=CR|LF|CRLF\r\n"
+    "\nwriting output\r\n"
+    "  write=text ... write out as is\r\n"
+    "  writeln=text ... write out adding configured line termination\r\n"
+    "\nreading input\r\n"
+    "  read ... return all characters available in buffer\r\n"
+    "  readln ... return single line (removing configured line termination)"
+    "NOTE: settings default to 8,N,1\r\n";
 
 void espSerial::setTerm(String value)
 {

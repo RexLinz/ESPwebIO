@@ -1,22 +1,18 @@
 #include "webIO.h"
 
-const String espGPIO::help()
-{
-    static const String helptext = 
-        "Help on GPIO subsystem\r\n"
-        "\ndigital IO\r\n"
-        "  set/clear/toggle=pins ... new digital pin state\r\n"
-        "  state=pins ... query digital pin state\r\n"
-        "\nconfiguration\r\n"
-        "  input/inputPullUp/inputPullDown=pins ... digital input pin modes\r\n"
-        "  output/outputOpenDrain=pins ... digital output pin modes\r\n"
-        "  analog=pins ... analog input mode\r\n"
-        "  mode=pins ... query pin mode\r\n"
-        "\npins is a list of comma separated GPIO numbers, e.g.\r\n"
-        "  http://webIO/GPIO/state=22,23 reading state of GPIO pins 22 and 23\r\n"
-        "\ncommands writing data return 1 as result if successful, 0 on error\r\n";
-    return helptext;
-}
+const String espGPIO::help = 
+    "Help on GPIO subsystem\r\n"
+    "\ndigital IO\r\n"
+    "  set/clear/toggle=pins ... new digital pin state\r\n"
+    "  state=pins ... query digital pin state\r\n"
+    "\nconfiguration\r\n"
+    "  input/inputPullUp/inputPullDown=pins ... digital input pin modes\r\n"
+    "  output/outputOpenDrain=pins ... digital output pin modes\r\n"
+    "  analog=pins ... analog input mode\r\n"
+    "  mode=pins ... query pin mode\r\n"
+    "\npins is a list of comma separated GPIO numbers, e.g.\r\n"
+    "  http://webIO/GPIO/state=22,23 reading state of GPIO pins 22 and 23\r\n"
+    "\ncommands writing data return 1 as result if successful, 0 on error\r\n";
 
 espGPIO::espGPIO()
 {

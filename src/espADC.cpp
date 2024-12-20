@@ -1,25 +1,21 @@
 #include "webIO.h"
 
-const String espADC::help()
-{
-    static const String helptext = 
-        "Help on ADC subsystem\r\n"
-        "  attenuation, oversampling, offset and scale apply to a list of pins to be configured before.\r\n"
-        "  For these commands a list of values or a single value (to be applied to all) could be specified, e.g.\r\n"
-        "    pins=36,39&attenuation=2.5dB,6dB ... set attenuation on input 36 to 2.5dB, input 39 to 6dB\r\n"
-        "    pins=36,39&scale=2.5 ... set scale on inputs 36 and 39 to 2.0\r\n"
-        "  pins=pinlist ... set list of pins, separated by commas\r\n"
-        "\ngeneral settings\r\n"
-        "  attenuation=0dB/2.5dB/6dB/11dB (FSR about 1.0/1.35/1.9/3.3 V)\r\n"
-        "  oversampling=n ... sum n readings per call\r\n"
-        "\nconfiguration for reading scaled output\r\n"
-        "  offset=float ... set offset (default 0.0)\r\n"
-        "  scale=float ... set scaling (default 1.0)\r\n"
-        "\nreading input\r\n"
-        "  raw=pins ... read as is (uint)\r\n"
-        "  value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
-    return helptext;
-}
+const String espADC::help = 
+    "Help on ADC subsystem\r\n"
+    "  attenuation, oversampling, offset and scale apply to a list of pins to be configured before.\r\n"
+    "  For these commands a list of values or a single value (to be applied to all) could be specified, e.g.\r\n"
+    "    pins=36,39&attenuation=2.5dB,6dB ... set attenuation on input 36 to 2.5dB, input 39 to 6dB\r\n"
+    "    pins=36,39&scale=2.5 ... set scale on inputs 36 and 39 to 2.0\r\n"
+    "  pins=pinlist ... set list of pins, separated by commas\r\n"
+    "\ngeneral settings\r\n"
+    "  attenuation=0dB/2.5dB/6dB/11dB (FSR about 1.0/1.35/1.9/3.3 V)\r\n"
+    "  oversampling=n ... sum n readings per call\r\n"
+    "\nconfiguration for reading scaled output\r\n"
+    "  offset=float ... set offset (default 0.0)\r\n"
+    "  scale=float ... set scaling (default 1.0)\r\n"
+    "\nreading input\r\n"
+    "  raw=pins ... read as is (uint)\r\n"
+    "  value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
 
 espADC::espADC(adc_attenuation_t att)
 {
