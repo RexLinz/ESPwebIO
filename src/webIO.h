@@ -5,22 +5,23 @@
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
-#define WEBIO_VERSION "WebIO version 1.4.1\r\n"
+#define WEBIO_VERSION "WebIO version 1.4.2\r\n"
 
 // some utility functions which might be useful to several parsers 
 class espUtil
 {
 protected:
     // get the next uint8 value from list, remove that from list
-    static int nextInt(String &list);
-    // get the next float value from comma separated list, remove that from list
-    static float nextFloat(String &list);
-    // get the next String value from comma separated list, remove that from list
-    static String nextString(String &list);
+    static int nextInt(String &list, String delim=",");
+    // get the next float value from separated list, remove that from list
+    static float nextFloat(String &list, String delim=",");
+    // get the next String value from separated list, remove that from list
+    static String nextString(String &list, String delim=",");
+public:
+    static const String help(); // root help
+    static String status(); // ESP status without WiFi
 };
 
-// number of pins to manage
-//#define NUM_ESP_PINS SOC_GPIO_PIN_COUNT
 
 class espGPIO : private espUtil
 {
@@ -42,7 +43,7 @@ private:
     String state(uint8_t pin);  // read state
 public:
     espGPIO(); // initialize
-    String help(); // return help string
+    static const String help(); // return help string
     String parse(String command, String value);
 };
 
@@ -66,8 +67,8 @@ private:
     String read();   // read all available data
     String readln(); // read single line removing configured line termination
 public:
-    static String help();
     espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
+    static const String help();
     String parse(String command, String value);
 };
 
@@ -92,7 +93,7 @@ private:
     void disable() { dacDisable(dacPin); };
 public:
     espDAC(uint8_t pin) : dacPin(pin) {};
-    String help();
+    static const String help();
     String parse(String command, String value);
 };
 
@@ -133,13 +134,12 @@ private:
     String parseList(String command, String numberList);
 public:
     espADC(adc_attenuation_t att=ADC_6db); // default, best performance of ADC
-    String help();
+    static const String help();
     String parse(String command, String value); // parameters to be determined
 };
 extern espADC webADC;
 
-/* =====================================
-   TODO future classes to be implemented
+/* TODO future classes to be implemented
 
 class espI2C
 {

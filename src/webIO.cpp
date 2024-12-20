@@ -4,10 +4,10 @@
 
 // get the next int value from comma separated list, 
 // remove that from list
-int espUtil::nextInt(String &list)
+int espUtil::nextInt(String &list, String delim)
 {
     int val = list.toInt();
-    int n = list.indexOf(',');
+    int n = list.indexOf(delim);
     if (n>=0)
         list = list.substring(n+1);
     else // last one has been processed
@@ -17,10 +17,10 @@ int espUtil::nextInt(String &list)
 
 // get the next float value from comma separated list, 
 // remove that from list
-float espUtil::nextFloat(String &list)
+float espUtil::nextFloat(String &list, String delim)
 {
     float val = list.toFloat();
-    int n = list.indexOf(',');
+    int n = list.indexOf(delim);
     if (n>=0)
         list = list.substring(n+1);
     else // last one has been processed
@@ -30,9 +30,9 @@ float espUtil::nextFloat(String &list)
 
 // get the next float value from comma separated list, 
 // remove that from list
-String espUtil::nextString(String &list)
+String espUtil::nextString(String &list, String delim)
 {
-    int n = list.indexOf(',');
+    int n = list.indexOf(delim);
     String val = "";
     if (n>=0)
     {
@@ -45,6 +45,28 @@ String espUtil::nextString(String &list)
         list = "";
     }
     return val;
+}
+
+String espUtil::help()
+{
+    String message = 
+        WEBIO_VERSION
+        "available subsystems\r\n"
+        "  /status ... returning system status\r\n"
+        "  /GPIO\r\n"
+        "  /Serial = /Serial0, /Serial1, Serial2\r\n"
+        "  /DAC1, /DAC2\r\n"
+        "  /ADC\r\n"
+        "requesting any subsystem without further parameters will return subsystem's help\r\n";
+    return message;
+}
+
+String espUtil::status()
+{
+    String message = 
+        WEBIO_VERSION
+        "Free heap " + String(ESP.getFreeHeap()) + " bytes, largest block " +String(ESP.getMaxAllocHeap()) + " bytes\r\n";
+    return message;
 }
 
 // ESP32 has one set of GPIO
