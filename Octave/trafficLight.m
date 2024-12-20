@@ -24,10 +24,8 @@ do
   pause(1);
   webwrite(server, "clear", red, "clear", yellow , "set", green);
   pause(3);
-  for n=1:4
-    webwrite(server, "clear", green);
-    pause(0.5);
-    webwrite(server, "set", green);
+  for n=1:8
+    webwrite(server, "toggle", green);
     pause(0.5);
   end
   webwrite(server, "clear", green, "set", yellow);
