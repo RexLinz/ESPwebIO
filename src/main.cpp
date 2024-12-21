@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ESPmDNS.h>
 #include <WiFi.h>
-//#include "networkHome.h" // defines for home network
+#include "networkHome.h" // defines for home network
 //#include "networkOffice.h" // defines for office network
 #include "webIO.h"
 #include "httpIO.h"
@@ -17,6 +17,8 @@
 
 // this application's host name to publish on network
 #define WIFI_HOST "WebIO"
+
+//WiFiServer tcpServer(8080);
 
 // connect to WiFi network or create access point
 void connectWiFi()
@@ -73,9 +75,20 @@ void setup()
 
     connectWiFi(); // connect to WiFi network or create access point
     startHTTP();   // start parsing of http requests
+//    tcpServer.begin();
 }
+
+// https://docs.arduino.cc/language-reference/en/functions/wifi/server/ 
 
 void loop() 
 {
+    delay(100); // anything handled in callbacks
+/*
+    static WiFiClient tcpClient;
     webStream.parse(Serial); // should be able to parse from TCP and UDP as well
+    if (tcpClient.connected())
+        webStream.parse(tcpClient);
+    else
+        tcpClient = tcpServer.available();
+*/
 }
