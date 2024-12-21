@@ -14,7 +14,13 @@ class streamIO : private espUtil
 private:
     String _endOfLine;
     String rxBuffer;
-    String GPIO(String args);
+    String argName;
+    String argValue;
+    void nextArg(String &args); // extract next argument from list, store in argName and argValue
+    String streamGPIO(String args);
+    String streamSerial(espSerial &serial, String args);
+    String streamDAC(espDAC &DAC, String args);
+    String streamADC(String args);
 public:
     streamIO(String termination="\r\n") : _endOfLine(termination) {};
     void setTerm(String termination) { _endOfLine = termination; };

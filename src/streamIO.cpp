@@ -1,37 +1,79 @@
 #include "webIO.h"
 #include "streamIO.h"
 
-String streamIO::GPIO(String args)
+void streamIO::nextArg(String &args)
 {
-    Serial.println(args); // for debugging of keyboard input
+    // extract next argument from list
+    String arg = espUtil::nextString(args, "&");
+    // split into name and value
+    String argName;
+    String argValue;
+    int valPos = arg.indexOf("=");
+    if (valPos >= 0)
+    {
+        argName  = arg.substring(0,valPos);
+        argValue = arg.substring(valPos+1);
+    }
+    else
+    {
+        argName  = arg;
+        argValue = "";
+    }
+}
+
+String streamIO::streamGPIO(String args)
+{
+//    Serial.println(args); // for debugging of keyboard input
     String message = "";
     if (args.length() == 0)
         return webGPIO.help; // plain text
     while (args.length() > 0)
     {
-        // extract next argument from list
-        String arg = espUtil::nextString(args,"&");
-        // split into name and value
-        String argName;
-        String argValue;
-        int valPos = arg.indexOf("=");
-        if (valPos >= 0)
-        {
-            argName  = arg.substring(0,valPos);
-            argValue = arg.substring(valPos+1);
-        }
-        else
-        {
-            argName  = arg;
-            argValue = "";
-        }
+        nextArg(args);
         String response = webGPIO.parse(argName, argValue);
-        if (response.length() > 0)
-        {
-            if (message.length() > 0)
-                message += ",\r\n";
-            message += response;
-        }
+        addResponse(message, response);
+    }
+    return "{\r\n" + message + "\r\n}\r\n"; // JSON string
+}
+
+String streamIO::streamSerial(espSerial &serial, String args)
+{
+    String message = "";
+    if (args.length() == 0)
+        return espSerial::help; // plain text
+    while (args.length() > 0)
+    {
+        nextArg(args);
+        String response = serial.parse(argName, argValue);
+        addResponse(message, response);
+    }
+    return message; // plain text
+}
+
+String streamIO::streamDAC(espDAC &DAC, String args)
+{
+    String message = "";
+    if (args.length() == 0)
+        return espDAC::help; // plain text
+    while (args.length() > 0)
+    {
+        nextArg(args);
+        String response = DAC.parse(argName, argValue);
+        addResponse(message, response);
+    }
+    return message; // plain text
+}
+
+String streamIO::streamADC(String args)
+{
+    String message = "";
+    if (args.length() == 0)
+        return espADC::help; // plain text
+    while (args.length() > 0)
+    {
+        nextArg(args);
+        String response = webADC.parse(argName, argValue);
+        addResponse(message, response);
     }
     return "{\r\n" + message + "\r\n}\r\n"; // JSON string
 }
@@ -74,7 +116,21 @@ void streamIO::parse(Stream & s)
     else if (url == "/status")
         s.print(espUtil::status());
     else if (url == "/GPIO")
-        s.print(GPIO(args));
+        s.print(streamGPIO(args));
+    else if (url == "/Serial")
+        s.print(streamSerial(webSerial0, args));
+    else if (url == "/Serial0")
+        s.print(streamSerial(webSerial0, args));
+    else if (url == "/Serial1")
+        s.print(streamSerial(webSerial1, args));
+    else if (url == "/Serial2")
+        s.print(streamSerial(webSerial2, args));
+    else if (url == "/DAC1")
+        s.print(streamDAC(webDAC1, args));
+    else if (url == "/DAC2")
+        s.print(streamDAC(webDAC2, args));
+    else if (url == "/ADC")
+        s.print(streamADC(args));
     else
         s.println("undefined url: \"" + url + "\""); 
     rxBuffer = "";
