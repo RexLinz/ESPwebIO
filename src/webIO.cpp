@@ -47,7 +47,7 @@ String espUtil::nextString(String &list, String delim)
     return val;
 }
 
-void espUtil::addResponse(String &message, String response, String separator=",\r\n")
+void espUtil::addResponse(String &message, String response, String separator)
 {
     if (response.length() > 0)
     {
