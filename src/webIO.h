@@ -17,6 +17,8 @@ protected:
     static float nextFloat(String &list, String delim=",");
     // get the next String value from separated list, remove that from list
     static String nextString(String &list, String delim=",");
+// add response to message, if message is nonempty add separator before
+    void addResponse(String &message, String response, String separator=",\r\n");
 public:
     static const String help; // root help
     static String status(); // ESP status without WiFi

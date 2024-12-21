@@ -47,6 +47,16 @@ String espUtil::nextString(String &list, String delim)
     return val;
 }
 
+void espUtil::addResponse(String &message, String response, String separator=",\r\n")
+{
+    if (response.length() > 0)
+    {
+        if (message.length() > 0) // there is already text
+            message += separator; // add separator before
+        message += response;
+    }
+}
+
 const String espUtil::help = 
         WEBIO_VERSION
         "available subsystems\r\n"
