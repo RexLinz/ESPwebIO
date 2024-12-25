@@ -66,9 +66,8 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println();
-    Serial.println("==================");
-    Serial.println("ESP WebIO " WEBIO_VERSION);
-    Serial.println();
+    Serial.println("===================");
+    Serial.print(WEBIO_VERSION);
 
     while (Serial.available())
         Serial.read(); // clear input

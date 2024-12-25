@@ -6,80 +6,96 @@
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
+// root help
 void httpRoot(AsyncWebServerRequest *request) 
 {
-    request->send(200, "text/plain", espUtil::help);
+    request->send(200, "text/plain", webRoot.help());
 }
 
 // display status information
 void httpStatus(AsyncWebServerRequest *request)
 {
-    String message = espUtil::status() + 
+    String message = webRoot.status() + 
         "Network \"" + WiFi.SSID() + "\" RSSI " + String(WiFi.RSSI()) + " dB\r\n";
     request->send(200, "text/plain", message);
 }
 
-// handle /GPIO requests
-void httpGPIO(AsyncWebServerRequest *request)
+// parse the arguments using the parser from the given object
+// return JSON formatted string (except for help)
+void httpJSON(espRoot &base, AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
-        request->send(200, "text/plain", webGPIO.help);
+        request->send(200, "text/plain", base.help());
     else 
     { // process all arguments from request
         for (uint8_t i = 0; i < request->args(); i++) 
         {
-            String response = webGPIO.parse(request->argName(i), request->arg(i));
-            if (response.length() > 0)
-            {
-                if (message.length() > 0)
-                    message += ",\r\n";
-                message += response;
-            }
+            String response = base.parse(request->argName(i), request->arg(i));
+            base.addResponse(message, response, ",\r\n");
         }
         request->send(200, "application/json", "{\r\n" + message + "\r\n}");
     }
 }
 
-// generic handler for all async serial interfaces,
-// actual interfaces redirecting to here
-void httpSerial(espSerial &serial, AsyncWebServerRequest *request)
+/*
+// parse the arguments using the parser from the given object
+// return plain text string
+void httpText(espRoot &base, AsyncWebServerRequest *request)
 {
     String message = "";
     if (request->args() == 0)
-        request->send(200, "text/plain", serial.help);
+        request->send(200, "text/plain", base.help());
     // process all arguments from request
     else 
     {
         for (uint8_t i = 0; i < request->args(); i++) 
         {
-            String response = serial.parse(request->argName(i), request->arg(i));
-            if (response.length() > 0)
-            {
-                if (message.length() > 0)
-                    message += "\r\n";
-                message += response;
-            }
+            String response = base.parse(request->argName(i), request->arg(i));
+            base.addResponse(message, response, "\r\n");
         }
         request->send(200, "text/plain", message);
     }
 }
+*/
 
-// handle /Serial0 requests (equals /Serial)
+// /GPIO callback
+void httpGPIO(AsyncWebServerRequest *request)
+{
+    httpJSON(webGPIO, request);
+}
+
+void httpSerial(espRoot &base, AsyncWebServerRequest *request)
+{
+    bool asText = false;
+    if ((request->args()==1) &&  (request->argName(0U).substring(0,4)=="read")) 
+    {   // we have just read or readln?
+        // -> these respond sending plain text!
+        String response = base.parse(request->argName(0U), request->arg(0U));
+        request->send(200, "text/plain", response);
+    }
+    else
+        httpJSON(base, request);
+}
+
+// /Serial0 callback (equals /Serial)
 void httpSerial0(AsyncWebServerRequest *request)
 {
+//    httpText(webSerial0, request);
     httpSerial(webSerial0, request);
 }
 
-// handle /Serial1 requests
+// /Serial1 callback
 void httpSerial1(AsyncWebServerRequest *request)
 {
+//    httpText(webSerial1, request);
     httpSerial(webSerial1, request);
 }
 
-// handle /Serial2 requests
+// /Serial2 callback
 void httpSerial2(AsyncWebServerRequest *request)
 {
+//    httpText(webSerial2, request);
     httpSerial(webSerial2, request);
 }
 
@@ -101,62 +117,26 @@ void httpBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t 
     }
 }
 
-// handle DAC requests
-void httpDAC(espDAC &dac, AsyncWebServerRequest *request)
-{
-    String message = "";
-    if (request->args() == 0)
-        request->send(200, "text/plain", dac.help);
-    else 
-    { // process all arguments from request
-        for (uint8_t i = 0; i < request->args(); i++) 
-        {
-            String response = dac.parse(request->argName(i), request->arg(i));
-            if (response.length() > 0)
-            {
-                if (message.length() > 0)
-                    message += "\r\n";
-                message += response;
-            }
-        }
-        request->send(200, "text/plain", message);
-    }
-}
-
+// DAC1 callback
 void httpDAC1(AsyncWebServerRequest *request)
 {
-    httpDAC(webDAC1, request);
+    httpJSON(webDAC1, request);
 }
 
+// DAC2 callback
 void httpDAC2(AsyncWebServerRequest *request)
 {
-    httpDAC(webDAC2, request);
+    httpJSON(webDAC2, request);
 }
 
-// handle ADC requests
+// ADC callbak
 void httpADC(AsyncWebServerRequest *request)
 {
-    String message = "";
-    if (request->args() == 0)
-        request->send(200, "text/plain", webADC.help);
-    else 
-    { // process all arguments from request
-        for (uint8_t i = 0; i < request->args(); i++) 
-        {
-            String response = webADC.parse(request->argName(i), request->arg(i));
-            if (response.length() > 0)
-            {
-                if (message.length() > 0)
-                    message += ",\r\n";
-                message += response;
-            }
-        }
-        request->send(200, "application/json", "{\r\n" + message + "\r\n}");
-    }
+    httpJSON(webADC, request);
 }
 
-// display some debugging information about any
-// request not handled else
+// display some debugging information 
+// for any request not handled else
 void httpNotFound(AsyncWebServerRequest *request) 
 {
     String message = "url not found\n\n";
@@ -171,7 +151,7 @@ void httpNotFound(AsyncWebServerRequest *request)
     request->send(200, "text/plain", message);
 }
 
-// set up callback functions and start the server
+// set up callback functions and start the http server
 void startHTTP()
 {
     // application version and general help 

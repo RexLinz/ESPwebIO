@@ -4,7 +4,7 @@
 
 // get the next int value from comma separated list, 
 // remove that from list
-int espUtil::nextInt(String &list, String delim)
+int espRoot::nextInt(String &list, String delim)
 {
     int val = list.toInt();
     int n = list.indexOf(delim);
@@ -17,7 +17,7 @@ int espUtil::nextInt(String &list, String delim)
 
 // get the next float value from comma separated list, 
 // remove that from list
-float espUtil::nextFloat(String &list, String delim)
+float espRoot::nextFloat(String &list, String delim)
 {
     float val = list.toFloat();
     int n = list.indexOf(delim);
@@ -30,7 +30,7 @@ float espUtil::nextFloat(String &list, String delim)
 
 // get the next float value from comma separated list, 
 // remove that from list
-String espUtil::nextString(String &list, String delim)
+String espRoot::nextString(String &list, String delim)
 {
     int n = list.indexOf(delim);
     String val = "";
@@ -47,7 +47,7 @@ String espUtil::nextString(String &list, String delim)
     return val;
 }
 
-void espUtil::addResponse(String &message, String response, String separator)
+void espRoot::addResponse(String &message, String response, String separator)
 {
     if (response.length() > 0)
     {
@@ -57,7 +57,9 @@ void espUtil::addResponse(String &message, String response, String separator)
     }
 }
 
-const String espUtil::help = 
+const String espRoot::help() 
+{
+    return 
         WEBIO_VERSION
         "available subsystems\r\n"
         "  /status ... returning system status\r\n"
@@ -66,14 +68,17 @@ const String espUtil::help =
         "  /DAC1, /DAC2\r\n"
         "  /ADC\r\n"
         "requesting any subsystem without further parameters will return subsystem's help\r\n";
+}
 
-String espUtil::status()
+String espRoot::status()
 {
     String message = 
         WEBIO_VERSION
         "Free heap " + String(ESP.getFreeHeap()) + " bytes, largest block " +String(ESP.getMaxAllocHeap()) + " bytes\r\n";
     return message;
 }
+
+espRoot webRoot;
 
 // ESP32 has one set of GPIO
 espGPIO webGPIO;

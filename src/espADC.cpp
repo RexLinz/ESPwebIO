@@ -1,21 +1,24 @@
 #include "webIO.h"
 
-const String espADC::help = 
-    "Help on ADC subsystem\r\n"
-    "  attenuation, oversampling, offset and scale apply to a list of pins to be configured before.\r\n"
-    "  For these commands a list of values or a single value (to be applied to all) could be specified, e.g.\r\n"
-    "    pins=36,39&attenuation=2.5dB,6dB ... set attenuation on input 36 to 2.5dB, input 39 to 6dB\r\n"
-    "    pins=36,39&scale=2.5 ... set scale on inputs 36 and 39 to 2.0\r\n"
-    "  pins=pinlist ... set list of pins, separated by commas\r\n"
-    "\ngeneral settings\r\n"
-    "  attenuation=0dB/2.5dB/6dB/11dB (FSR about 1.0/1.35/1.9/3.3 V)\r\n"
-    "  oversampling=n ... sum n readings per call\r\n"
-    "\nconfiguration for reading scaled output\r\n"
-    "  offset=float ... set offset (default 0.0)\r\n"
-    "  scale=float ... set scaling (default 1.0)\r\n"
-    "\nreading input\r\n"
-    "  raw=pins ... read as is (uint)\r\n"
-    "  value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
+const String espADC::help()
+{
+    return
+        "Help on ADC subsystem\r\n"
+        "  attenuation, oversampling, offset and scale apply to a list of pins to be configured before.\r\n"
+        "  For these commands a list of values or a single value (to be applied to all) could be specified, e.g.\r\n"
+        "    pins=36,39&attenuation=2.5dB,6dB ... set attenuation on input 36 to 2.5dB, input 39 to 6dB\r\n"
+        "    pins=36,39&scale=2.5 ... set scale on inputs 36 and 39 to 2.0\r\n"
+        "  pins=pinlist ... set list of pins, separated by commas\r\n"
+        "\ngeneral settings\r\n"
+        "  attenuation=0dB/2.5dB/6dB/11dB (FSR about 1.0/1.35/1.9/3.3 V)\r\n"
+        "  oversampling=n ... sum n readings per call\r\n"
+        "\nconfiguration for reading scaled output\r\n"
+        "  offset=float ... set offset (default 0.0)\r\n"
+        "  scale=float ... set scaling (default 1.0)\r\n"
+        "\nreading input (if pins is omitted, use value saved from pins=...)\r\n"
+        "  raw=pins ... read as is (uint)\r\n"
+        "  value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
+}
 
 espADC::espADC(adc_attenuation_t att)
 {
@@ -28,17 +31,27 @@ espADC::espADC(adc_attenuation_t att)
     }
 }
 
-/*
-void espADC::setAttenuation(String a)
+bool espADC::validADCpin(int pin)
 {
-    analogSetAttenuation(attenuationValue(a));
+    return (digitalPinToAnalogChannel(pin)>=0);
 }
 
-void espADC::setAttenuation(uint8_t pin, String a)
+String espADC::setPins(String pinList)
 {
-    analogSetPinAttenuation(pin, attenuationValue(a));
+    String result = "";
+    pins = pinList;
+    while (pinList.length() > 0)
+    {
+        uint8_t pin = nextInt(pinList);
+        if (validADCpin(pin))
+            addResponse(result, String(pin), ",");
+        else
+            addResponse(result, "\"invalid pin\"", ",");
+    }
+    if (result.indexOf("invalid") >= 0)
+        pins = "";
+    return result;
 }
-*/
 
 adc_attenuation_t espADC::attenuationValue(String a)
 {
@@ -55,8 +68,9 @@ adc_attenuation_t espADC::attenuationValue(String a)
 }
 
 // scan the list of pins and set attenuation to requested value for all of them
-void espADC::setAttenuation(String pinList, String valueList)
+String espADC::setAttenuation(String pinList, String valueList)
 { 
+    String result = "";
     if (valueList.indexOf(',') < 0) // list or just a single value?
     { // just single configuration for all channels
         adc_attenuation_t value = attenuationValue(valueList);
@@ -64,6 +78,7 @@ void espADC::setAttenuation(String pinList, String valueList)
         { // process list of pins
             uint8_t pin = nextInt(pinList);
             analogSetPinAttenuation(pin, value);
+            addResponse(result, "\"" + valueList + "\"", ",");
         }
     }
     else 
@@ -71,14 +86,17 @@ void espADC::setAttenuation(String pinList, String valueList)
         while ((pinList.length() > 0) && (valueList.length() > 0))
         { // process as long as we have pin/attenuation pairs
             uint8_t pin = nextInt(pinList);
-            adc_attenuation_t value = attenuationValue(nextString(valueList));
-            analogSetPinAttenuation(pin, value);
+            String value = nextString(valueList);
+            analogSetPinAttenuation(pin, attenuationValue(value));
+            addResponse(result, "\"" + value + "\"", ",");
         }
     }
+    return result;
 }
 
-void espADC::setOversampling(String pinList, String valueList)
+String espADC::setOversampling(String pinList, String valueList)
 {
+    String result;
     if (valueList.indexOf(',') < 0) // list or just a single value?
     { // just single configuration for all channels
         uint16_t value = valueList.toInt();
@@ -86,6 +104,7 @@ void espADC::setOversampling(String pinList, String valueList)
         { // process list of pins
             uint8_t pin = nextInt(pinList);
             oversampling[pin] = value;
+            addResponse(result, String(value), ",");
         }
     }
     else 
@@ -95,12 +114,15 @@ void espADC::setOversampling(String pinList, String valueList)
             uint8_t pin = nextInt(pinList);
             float value = nextString(valueList).toFloat();
             oversampling[pin] = value;
+            addResponse(result, String(value), ",");
         }
     }
+    return result;
 }
 
-void espADC::setOffset(String pinList, String valueList)
+String espADC::setOffset(String pinList, String valueList)
 {
+    String result = "";
     if (valueList.indexOf(',') < 0) // list or just a single value?
     { // just single configuration for all channels
         float value = valueList.toFloat();
@@ -108,6 +130,7 @@ void espADC::setOffset(String pinList, String valueList)
         { // process list of pins
             uint8_t pin = nextInt(pinList);
             offset[pin] = value;
+            addResponse(result, String(value), ",");
         }
     }
     else 
@@ -117,12 +140,15 @@ void espADC::setOffset(String pinList, String valueList)
             uint8_t pin = nextInt(pinList);
             float value = nextString(valueList).toFloat();
             offset[pin] = value;
+            addResponse(result, String(value), ",");
         }
     }
+    return result;
 }
 
-void espADC::setScale(String pinList, String valueList)
+String espADC::setScale(String pinList, String valueList)
 {
+    String result;
     if (valueList.indexOf(',') < 0) // list or just a single value?
     { // just single configuration for all channels
         float value = valueList.toFloat();
@@ -130,6 +156,7 @@ void espADC::setScale(String pinList, String valueList)
         { // process list of pins
             uint8_t pin = nextInt(pinList);
             scale[pin] = value;
+            addResponse(result, String(value), ",");
         }
     }
     else 
@@ -139,14 +166,15 @@ void espADC::setScale(String pinList, String valueList)
             uint8_t pin = nextInt(pinList);
             float value = nextString(valueList).toFloat();
             scale[pin] = value;
+            addResponse(result, String(value), ",");
         }
     }
+    return result;
 }
 
 
 uint32_t espADC::getRaw(uint8_t pin)
 {
-//    analogSetAttenuation(ADC_6db);
     uint32_t temp = 0;
     int N = oversampling[pin];
     for (int n=N; n>0; n--)
@@ -157,7 +185,9 @@ uint32_t espADC::getRaw(uint8_t pin)
 String espADC::parseList(String command, String numberList)
 {
     String result = "";
-    // split pinList into numbers separated by comma
+    if (numberList.length() == 0)
+        numberList = pins;
+    // split numberList into numbers separated by comma
     // for each number call function()
     // assemble returned strings to JSON like array
     while (numberList.length() > 0)
@@ -169,15 +199,9 @@ String espADC::parseList(String command, String numberList)
         else if (command == "value")
             temp = String(getValue(pin));
         // assemble result string
-        if (result.length() > 0)
-            result += ","; // item separator
-        result += temp; // function result
+        addResponse(result, temp, ",");
     }
-    if (result.length()==0)
-        return ""; // no output generated
-    if (result.indexOf(",") > 0)
-        result =  "[" + result + "]"; // output is array
-    return "\"" + command + "\":" + result;
+    return result;
 }
 
 String espADC::parse(String command, String value)
@@ -185,20 +209,25 @@ String espADC::parse(String command, String value)
     // _serial.println(command + ":" + value);
     String result = "";
     if (command == "pins")
-        pins = value; // save for use by following commands
+        result = setPins(value); // save for use by following commands
     else if (command == "attenuation")
-        setAttenuation(pins, value);
+        result = setAttenuation(pins, value);
     else if (command == "oversampling")
-        setOversampling(pins, value);
+        result = setOversampling(pins, value);
     else if (command == "offset")
-        setOffset(pins, value);
+        result = setOffset(pins, value);
     else if (command == "scale")
-        setScale(pins, value);
+        result = setScale(pins, value);
     else if (command == "raw")
         result = parseList(command, value); 
     else if (command == "value")
         result = parseList(command, value);
     else
         result = "invalid keyword " + command;
-    return result;
+    // complete result as JSON
+    if (result.length()==0)
+        return ""; // no output generated
+    if (result.indexOf(",") > 0)
+        result =  "[" + result + "]"; // output is array
+    return "\"" + command + "\":" + result;
 }

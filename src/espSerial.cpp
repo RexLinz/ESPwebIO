@@ -1,23 +1,28 @@
 #include "webIO.h"
 
 // TODO send out message body of POST commands
-const String espSerial::help = 
-    "Help on Serial subsystem\r\n"
-    "\nconfiguration\r\n"
-    "  begin=baudrate\r\n"
-    "  setBaud=baudrate\r\n"
-    "  txPin=pin\r\n"
-    "  rxPin=pin\r\n"
-    "  setTerm=CR|LF|CRLF\r\n"
-    "\nwriting output\r\n"
-    "  write=text ... write out as is\r\n"
-    "  writeln=text ... write out adding configured line termination\r\n"
-    "\nreading input\r\n"
-    "  read ... return all characters available in buffer\r\n"
-    "  readln ... return single line (removing configured line termination)"
-    "NOTE: settings default to 8,N,1\r\n";
+const String espSerial::help()
+{
+    return
+        "Help on Serial subsystem\r\n"
+        "\nconfiguration\r\n"
+        "  txPin=pin\r\n"
+        "  rxPin=pin\r\n"
+        "  rxBufferSize=size\r\n"
+        "  txBufferSize=size\r\n"
+        "  setTerm=CR|LF|CRLF\r\n"
+        "  setBaud=baudrate\r\n"
+        "  begin=baudrate\r\n"
+        "\nwriting output\r\n"
+        "  write=text ... write out as is\r\n"
+        "  writeln=text ... write out adding configured line termination\r\n"
+        "\nreading input\r\n"
+        "  read ... return all characters available in buffer\r\n"
+        "  readln ... return single line (removing configured line termination)"
+        "NOTE: settings default to 8,N,1\r\n";
+}
 
-void espSerial::setTerm(String value)
+String espSerial::setTerm(String value)
 {
     if (value == "CR")
         _endOfLine = "\r";
@@ -25,8 +30,9 @@ void espSerial::setTerm(String value)
         _endOfLine = "\n";
     else if (value == "CRLF")
         _endOfLine = "\r\n";
-    else   
-        _endOfLine = ""; // TODO report error?
+    else
+        return "\"invalid termination\"";
+    return value;
 }
 
 String espSerial::read()
@@ -65,24 +71,33 @@ String espSerial::parse(String command, String value)
     // _serial.println(command + ":" + value);
     String result = "";
     if (command == "begin")
-        _serial.begin(value.toInt());
+        result = begin(value.toInt());
     else if (command == "baud")
-        _serial.updateBaudRate(value.toInt());
+        result = setBaud(value.toInt());
     else if (command == "rxPin")
-        _serial.setPins(value.toInt(), -1);
+        result = rxPin(value.toInt());
     else if (command == "txPin")
-        _serial.setPins(-1, value.toInt());
+        result = txPin(value.toInt());
+    else if (command == "rxBufferSize")
+        result = rxBufferSize(value.toInt());
+    else if (command == "txBufferSize")
+        result = txBufferSize(value.toInt());
     else if (command == "setTerm")
-        setTerm(value);
+        result = setTerm(value);
     else if (command == "write")
-        write(value);
+        result = write(value);
     else if (command == "writeln")
-        writeln(value);
+        result = writeln(value);
     else if (command == "read")
-        result = read();
+        return read();
     else if (command == "readln")
-        result = readln();
+        return readln();
     else
-        result = "invalid keyword " + command;
-    return result;
+        result = "\"invalid keyword " + command + "\"";
+    // complete result as JSON
+    if (result.length()==0)
+        return ""; // no output generated
+    if (result.indexOf(",") > 0)
+        result =  "[" + result + "]"; // output is array
+    return "\"" + command + "\":" + result;
 }

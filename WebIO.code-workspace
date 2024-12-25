@@ -9,7 +9,10 @@
 			"system_error": "cpp",
 			"functional": "cpp",
 			"bitset": "cpp",
-			"random": "cpp"
+			"random": "cpp",
+			"cmath": "cpp",
+			"string_view": "cpp",
+			"regex": "cpp"
 		}
 	}
 }

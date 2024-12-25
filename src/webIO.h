@@ -5,10 +5,10 @@
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
-#define WEBIO_VERSION "WebIO version 1.4.2\r\n"
+#define WEBIO_VERSION "WebIO version 2.0\r\n"
 
 // some utility functions which might be useful to several parsers 
-class espUtil
+class espRoot
 {
 protected:
     // get the next uint8 value from list, remove that from list
@@ -17,15 +17,17 @@ protected:
     static float nextFloat(String &list, String delim=",");
     // get the next String value from separated list, remove that from list
     static String nextString(String &list, String delim=",");
+public:
+    static String status(); // ESP status without WiFi
+    virtual const String help(); // root help
 // add response to message, if message is nonempty add separator before
     void addResponse(String &message, String response, String separator=",\r\n");
-public:
-    static const String help; // root help
-    static String status(); // ESP status without WiFi
+    virtual String parse(String command, String value) { return ""; };
 };
 
+extern espRoot webRoot;
 
-class espGPIO : private espUtil
+class espGPIO : public espRoot
 {
 private:
     uint8_t savedPinMode[SOC_GPIO_PIN_COUNT]; // 0..39
@@ -45,7 +47,7 @@ private:
     String state(uint8_t pin);  // read state
 public:
     espGPIO(); // initialize
-    static const String help; // return help string
+    const String help(); // return help string
     String parse(String command, String value);
 };
 
@@ -53,24 +55,27 @@ public:
 extern espGPIO webGPIO;
 
 
-class espSerial
+class espSerial : public espRoot
 {
 private:
     HardwareSerial &_serial;
     String _endOfLine = "\r\n";
-    String rxBuffer = ""; // receive buffer
-    void begin(unsigned long baud) { _serial.begin(baud); };
-    void setBaud(unsigned long baud) { _serial.updateBaudRate(baud); };
-    void rxPin(uint8_t rxPin) { _serial.setPins(rxPin, -1); };
-    void txPin(uint8_t txPin) { _serial.setPins(-1, txPin); };
-    void setTerm(String t); // set termination 
-    void write(String s) { _serial.print(s); }; // send string s
-    void writeln(String s) { _serial.print(s+_endOfLine); }; // ... adding line termination
+    String rxBuffer = ""; // internal receive buffer to allow delivering full lines
+    String rxPin(uint8_t rxPin) { _serial.setPins(rxPin, -1); return String(rxPin); };
+    String txPin(uint8_t txPin) { _serial.setPins(-1, txPin); return String(txPin); };
+    // Arduino side buffer sizes (default is 128)
+    String rxBufferSize(size_t size) {_serial.setRxBufferSize(size); return String(size); };
+    String txBufferSize(size_t size) {_serial.setTxBufferSize(size); return String(size); };
+    String setTerm(String t); // set termination 
+    String setBaud(unsigned long baud) { _serial.updateBaudRate(baud); return String(baud); };
+    String begin(unsigned long baud) { _serial.begin(baud); return String(baud); };
+    String write(String s) { _serial.print(s); return "\"OK\""; }; // send string s
+    String writeln(String s) { _serial.print(s+_endOfLine); return "\"OK\""; }; // ... adding line termination
     String read();   // read all available data
     String readln(); // read single line removing configured line termination
 public:
     espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
-    static const String help;
+    const String help();
     String parse(String command, String value);
 };
 
@@ -79,7 +84,7 @@ extern espSerial webSerial1;
 extern espSerial webSerial2;
 
 // ESP32 has two DAC's
-class espDAC
+class espDAC : public espRoot
 {
 private:
     uint8_t dacPin;
@@ -87,15 +92,15 @@ private:
     float _scale = 1.0f;
     float _offset = 0.0f;
     // raw output
-    void setRaw(uint8_t value);
+    String setRaw(int value); // returns actual value set (clipped to range 0..255)
     // scaled output
-    void setOffset(int o) { _offset = o; };
-    void setScale(float s) { _scale = s; };
-    void setValue(float val) { setRaw(round(val*_scale + _offset)); };
-    void disable() { dacDisable(dacPin); };
+    String setOffset(int o) { _offset = o; return String(o); };
+    String setScale(float s) { _scale = s; return String(s); };
+    String setValue(float val); // return scaled value set (clipped to range 0..255)
+    String disable() { dacDisable(dacPin); return "\"OK\""; };
 public:
     espDAC(uint8_t pin) : dacPin(pin) {};
-    static const String help;
+    const String help();
     String parse(String command, String value);
 };
 
@@ -103,31 +108,25 @@ extern espDAC webDAC1;
 extern espDAC webDAC2;
 
 // ESP32 has two ADC's, but ADC2 is blocked by WiFi!
-class espADC : private espUtil
+class espADC : public espRoot
 {
 private:
     String pins=""; // list of pins for commands working on multiple inputs
 
-//    adc_attenuation_t attenuation = ADC_6db; // best performance
-//    void setAttenuation(String a); // all channels
-//    void setAttenuation(uint8_t pin, String a); // specific channel
+    bool validADCpin(int pin);
+    String setPins(String pinList);
+
     adc_attenuation_t attenuationValue(String a); // convert string to enum
-    void setAttenuation(String pinList, String valueList); // multiple channels
+    String setAttenuation(String pinList, String valueList); // multiple channels
 
-//    uint16_t oversampling=1; // oversampling (sum n values)
-//    void setOversampling(uint16_t n) { oversampling = n; };
     uint16_t oversampling[SOC_GPIO_PIN_COUNT];
-    void setOversampling(String pinList, String valueList);
+    String setOversampling(String pinList, String valueList);
 
-//    float offset = 0.0f;
-//    void setOffset(float o) { offset = o; };
     float offset[SOC_GPIO_PIN_COUNT];
-    void setOffset(String pinList, String valueList);
+    String setOffset(String pinList, String valueList);
 
-//    float scale = 1.0f;
-//    void setScale(float s) { scale = s; };
     float scale[SOC_GPIO_PIN_COUNT];
-    void setScale(String pinList, String valueList);
+    String setScale(String pinList, String valueList);
 
     // read raw data from pin x (after summing n readings as configured with oversampling)
     uint32_t getRaw(uint8_t pin);
@@ -136,12 +135,13 @@ private:
     String parseList(String command, String numberList);
 public:
     espADC(adc_attenuation_t att=ADC_6db); // default, best performance of ADC
-    static const String help;
+    const String help();
     String parse(String command, String value); // parameters to be determined
 };
 extern espADC webADC;
 
-/* TODO future classes to be implemented
+/* 
+TODO future classes to be implemented
 
 class espI2C
 {
