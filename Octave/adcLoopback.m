@@ -26,14 +26,14 @@ for a=1:length(attMode)
   for n=1:N
     webwrite(DAC1, "raw", num2str(n-1));
     webwrite(DAC2, "raw", num2str(n-1));
-    r = webread(ADC, "raw", "34,35");
+%    r = webread(ADC, "raw", "34,35");
+    r = webread(ADC, "raw", ""); % all configured pins
     p = strfind(r, "\"raw\":[") + length("\"raw\":[");
     v = sscanf(r(p:end), "%d,");
     val1(n, a) = v(1);
     val2(n, a) = v(2);
   end
   toc
-
 end
 
 webwrite(DAC1, "disable", "");
