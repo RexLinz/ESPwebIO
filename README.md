@@ -50,19 +50,22 @@ Access to GPIO (digital pin configuration, input and output)
 
 #### GPIO configuration
 
+Return OK or error message for each pin
+
 - input/inputPullUp/inputPullDown=pins ... digital input pin modes
 - output/outputOpenDrain=pins ... digital output pin modes
 - analog=pins ... analog input mode
-- mode=pins ... query pin mode
+
+Query pin mode
+
+- mode=pins ... return string
 
 #### Digital IO
 
-- set/clear/toggle=pins ... new digital pin state
+Commands returning (new) pin state or error message
+
+- set/clear/toggle=pins ... define pin state
 - state=pins ... query digital pin state
-
-#### Return value
-
-Commands writing data return 1 as result if successful, 0 on error
 
 ### Serial
 
@@ -74,15 +77,17 @@ Sending and receiving from serial lines (UART)
 
 #### Serial configuration
 
+- txPin=pin
+- rxPin=pin
+- txBufferSize=size
+- rxBufferSize=size
+- setTerm=CR|LF|CRLF (default)
+- setBaud=baud ... change baud rate. Equal to Serial.setBaud(baudrate) on Arduino
 - begin=baud   ... initialize at given baud rate  
 Equal to Serial.begin(baudrate) on Arduino.
 **NOTE** at the moment serial settings are fixed to 8N1
-- setBaud=baud ... change baud rate. Equal to Serial.setBaud(baudrate) on Arduino
-- txPin=pin
-- rxPin=pin
-- setTerm=CR|LF|CRLF (default)
 
-**NOTE** if accessing a serial port on different pins than default set txPin and rxPin before calling begin, e.g. <http://WebIO/Serial1?txPin=23&rxPin=22&begin(115200)> to configure Serial1 using txPin 23, rxPin 22 at 115200 baud, 8N1.
+**NOTE** if accessing a serial port on different pins than default set txPin and rxPin before calling begin, e.g. <http://WebIO/Serial1?txPin=23&rxPin=22&begin=115200> to configure Serial1 using txPin 23, rxPin 22 at 115200 baud, 8N1.
 
 #### Reading and writing to Serial
 
@@ -140,6 +145,7 @@ resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V
 
 ## Revision history
 
+- V2.0 reworked to get all but help and serial read/readln as JSON
 - V1.4 ADC configuration per pin
 - V1.3 added analog to digital converter /ADC
 - V1.2 added digital to analog converters /DAC1, /DAC2
