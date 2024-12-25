@@ -8,8 +8,8 @@ const String espSerial::help()
         "\nconfiguration\r\n"
         "  txPin=pin\r\n"
         "  rxPin=pin\r\n"
-        "  rxBufferSize=size\r\n"
         "  txBufferSize=size\r\n"
+        "  rxBufferSize=size\r\n"
         "  setTerm=CR|LF|CRLF\r\n"
         "  setBaud=baudrate\r\n"
         "  begin=baudrate\r\n"
@@ -74,14 +74,14 @@ String espSerial::parse(String command, String value)
         result = begin(value.toInt());
     else if (command == "baud")
         result = setBaud(value.toInt());
-    else if (command == "rxPin")
-        result = rxPin(value.toInt());
     else if (command == "txPin")
         result = txPin(value.toInt());
-    else if (command == "rxBufferSize")
-        result = rxBufferSize(value.toInt());
+    else if (command == "rxPin")
+        result = rxPin(value.toInt());
     else if (command == "txBufferSize")
         result = txBufferSize(value.toInt());
+    else if (command == "rxBufferSize")
+        result = rxBufferSize(value.toInt());
     else if (command == "setTerm")
         result = setTerm(value);
     else if (command == "write")
