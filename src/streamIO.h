@@ -9,7 +9,7 @@
 // /GPIO?set=17
 // result is written back to stream
 
-class streamIO : private espUtil
+class streamIO : private espRoot
 {
 private:
     String _endOfLine;
@@ -17,10 +17,8 @@ private:
     String argName;
     String argValue;
     void nextArg(String &args); // extract next argument from list, store in argName and argValue
-    String streamGPIO(String args);
-    String streamSerial(espSerial &serial, String args);
-    String streamDAC(espDAC &DAC, String args);
-    String streamADC(String args);
+    String streamJSON(espRoot &base, String args);
+    String streamText(espRoot &base, String args);
 public:
     streamIO(String termination="\r\n") : _endOfLine(termination) {};
     void setTerm(String termination) { _endOfLine = termination; };

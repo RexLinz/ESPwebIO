@@ -4,7 +4,7 @@
 void streamIO::nextArg(String &args)
 {
     // extract next argument from list
-    String arg = espUtil::nextString(args, "&");
+    String arg = nextString(args, "&");
     // split into name and value
     String argName;
     String argValue;
@@ -21,61 +21,32 @@ void streamIO::nextArg(String &args)
     }
 }
 
-String streamIO::streamGPIO(String args)
+String streamIO::streamJSON(espRoot &base, String args)
 {
-//    Serial.println(args); // for debugging of keyboard input
     String message = "";
     if (args.length() == 0)
-        return webGPIO.help; // plain text
+        return base.help(); // plain text
     while (args.length() > 0)
     {
         nextArg(args);
-        String response = webGPIO.parse(argName, argValue);
+        String response = base.parse(argName, argValue);
         addResponse(message, response);
     }
-    return "{\r\n" + message + "\r\n}\r\n"; // JSON string
+    return "{\r\n" + message + "\r\n}\r\n"; // JSON string   
 }
 
-String streamIO::streamSerial(espSerial &serial, String args)
+String streamIO::streamText(espRoot &base, String args)
 {
     String message = "";
     if (args.length() == 0)
-        return espSerial::help; // plain text
+        return base.help(); // plain text
     while (args.length() > 0)
     {
         nextArg(args);
-        String response = serial.parse(argName, argValue);
+        String response = base.parse(argName, argValue);
         addResponse(message, response);
     }
-    return message; // plain text
-}
-
-String streamIO::streamDAC(espDAC &DAC, String args)
-{
-    String message = "";
-    if (args.length() == 0)
-        return espDAC::help; // plain text
-    while (args.length() > 0)
-    {
-        nextArg(args);
-        String response = DAC.parse(argName, argValue);
-        addResponse(message, response);
-    }
-    return message; // plain text
-}
-
-String streamIO::streamADC(String args)
-{
-    String message = "";
-    if (args.length() == 0)
-        return espADC::help; // plain text
-    while (args.length() > 0)
-    {
-        nextArg(args);
-        String response = webADC.parse(argName, argValue);
-        addResponse(message, response);
-    }
-    return "{\r\n" + message + "\r\n}\r\n"; // JSON string
+    return message; // plain text  
 }
 
 // non blocking parsing of input stream
@@ -112,25 +83,25 @@ void streamIO::parse(Stream & s)
         args = "";
     }
     if (url == "/")
-        s.print(espUtil::help);
+        s.print(webRoot.help());
     else if (url == "/status")
-        s.print(espUtil::status());
+        s.print(webRoot.status());
     else if (url == "/GPIO")
-        s.print(streamGPIO(args));
+        s.print(streamJSON(webGPIO, args));
     else if (url == "/Serial")
-        s.print(streamSerial(webSerial0, args));
+        s.print(streamText(webSerial0, args));
     else if (url == "/Serial0")
-        s.print(streamSerial(webSerial0, args));
+        s.print(streamText(webSerial0, args));
     else if (url == "/Serial1")
-        s.print(streamSerial(webSerial1, args));
+        s.print(streamText(webSerial1, args));
     else if (url == "/Serial2")
-        s.print(streamSerial(webSerial2, args));
+        s.print(streamText(webSerial2, args));
     else if (url == "/DAC1")
-        s.print(streamDAC(webDAC1, args));
+        s.print(streamText(webDAC1, args));
     else if (url == "/DAC2")
-        s.print(streamDAC(webDAC2, args));
+        s.print(streamText(webDAC2, args));
     else if (url == "/ADC")
-        s.print(streamADC(args));
+        s.print(streamJSON(webADC, args));
     else
         s.println("undefined url: \"" + url + "\""); 
     rxBuffer = "";
