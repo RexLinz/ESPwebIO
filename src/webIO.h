@@ -61,11 +61,11 @@ private:
     HardwareSerial &_serial;
     String _endOfLine = "\r\n";
     String rxBuffer = ""; // internal receive buffer to allow delivering full lines
-    String rxPin(uint8_t rxPin) { _serial.setPins(rxPin, -1); return String(rxPin); };
     String txPin(uint8_t txPin) { _serial.setPins(-1, txPin); return String(txPin); };
+    String rxPin(uint8_t rxPin) { _serial.setPins(rxPin, -1); return String(rxPin); };
     // Arduino side buffer sizes (default is 128)
-    String rxBufferSize(size_t size) {_serial.setRxBufferSize(size); return String(size); };
     String txBufferSize(size_t size) {_serial.setTxBufferSize(size); return String(size); };
+    String rxBufferSize(size_t size) {_serial.setRxBufferSize(size); return String(size); };
     String setTerm(String t); // set termination 
     String setBaud(unsigned long baud) { _serial.updateBaudRate(baud); return String(baud); };
     String begin(unsigned long baud) { _serial.begin(baud); return String(baud); };
