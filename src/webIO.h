@@ -5,7 +5,7 @@
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
-#define WEBIO_VERSION "WebIO version 2.0\r\n"
+#define WEBIO_VERSION "WebIO version 2.1\r\n"
 
 // some utility functions which might be useful to several parsers 
 class espRoot

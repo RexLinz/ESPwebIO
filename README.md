@@ -22,6 +22,11 @@ Multiple requests to a single subsystem could be done in one request and will be
 
 If a query is returning value(s) this response will be JSON formatted for easy processing in the client's application. Web browsers will show this in a nice way as well.
 
+### TCP connections
+
+Starting with version 2.1 communication is also accepted via TCP or other stream based connection if enabled in main.cpp (see streamIO). After connecting to the device requests are sent similar to http requests, terminated by \004 = End Of Text (EOT).  
+The example above equal to sending `/GPIB?state=1,22` via TCP. Response sent back is formatted equal to http requests and terminated with EOT to simplify parsing of response.
+
 ### Specifying pin(s)
 
 Commands where **pins** have to be specified accept a list of comma separated **GPIO** numbers (not ESP chip or development kit pin numbers) e.g. <http://webIO/GPIO?state=22,23> reading state of GPIO pins 22 and 23
@@ -145,6 +150,7 @@ resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V
 
 ## Revision history
 
+- V2.1 added stream based connection, e.g. TCP or serial
 - V2.0 reworked to get all but help and serial read/readln as JSON
 - V1.4 ADC configuration per pin
 - V1.3 added analog to digital converter /ADC
