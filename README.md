@@ -4,7 +4,7 @@
 
 The intention with this program is to allow simple access to IO's on ESP devices via HTTP requests either from the web browser or other programs which allow to send http GET or POST requests, e.g.
 
-- <http://WebIO/GPIO?state=1,22> to read state of GPIO pins 1 and 11
+- <http://WebIO/GPIO?state=1,22> to read state of GPIO pins 1 and 22
 - <http://WebIO/GPIO?set=23> to set GPIO pin 23 active
 
 My usecase is using outputs on an ESP32 to be controlled via WiFi from GNU Octave (similar to Matlab) for automated test and measurement. In GNU Octave and Matlab the first example above will read as below.
@@ -25,7 +25,7 @@ If a query is returning value(s) this response will be JSON formatted for easy p
 ### TCP connections
 
 Starting with version 2.1 communication is also accepted via TCP or other stream based connection if enabled in main.cpp (see streamIO). After connecting to the device requests are sent similar to http requests, terminated by \004 = End Of Text (EOT).  
-The example above equal to sending `/GPIB?state=1,22` via TCP. Response sent back is formatted equal to http requests and terminated with EOT to simplify parsing of response.
+The example above is equal to sending `/GPIB?state=1,22` via TCP. Response sent back is formatted equal to http requests and terminated with EOT to simplify parsing of response.
 
 ### Specifying pin(s)
 
