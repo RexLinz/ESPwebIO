@@ -122,7 +122,7 @@ Attenuation, oversampling, offset and scale apply to a list of pins to be config
 For these commands a list of values or a single value (to be applied to all) could be specified, e.g.
 
 - pins=36,39&attenuation=2.5dB,6dB ... set attenuation on input 36 to 2.5dB, input 39 to 6dB
-- pins=36,39&scale=2.5 ... set scale on inputs 36 and 39 to 2.0
+- pins=36,39&scale=2.5 ... set scale on inputs 36 and 39 to 2.5
 - pins=pinlist ... set list of pins, separated by commas
 
 ##### General settings
@@ -146,7 +146,6 @@ resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V
 
 - At the moment some commands simply ignore invalid input instead of returning error codes
 - There is no check of pin numbers or pin capabilities. For example some GPIO pins are input only and the ADC could not be used at all pins as well.
-- Create variant accepting connection via serial or other stream (e.g. TCP, UDP)
 
 ## Revision history
 
