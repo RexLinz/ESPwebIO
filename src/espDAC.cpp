@@ -13,7 +13,7 @@ const String espDAC::help()
         "  disable ... disable DAC function on this channel (pin)\r\n"
         "\nwriting output\r\n"
         "  raw=uint_8 ... write out as is\r\n"
-        "  value=float ... write out scaled round(float*scale+offset)\r\n";
+        "  value=float ... write out scaled round(float*scale+offset)";
 }
 
 String espDAC::setRaw(int value)
@@ -46,7 +46,7 @@ String espDAC::parse(String command, String value)
     else if (command == "value")
         result = setValue(value.toFloat());
     else
-        result = "invalid keyword";
+        result = "\"invalid keyword\"";
     // complete result as JSON
     if (result.length()==0)
         return ""; // no output generated

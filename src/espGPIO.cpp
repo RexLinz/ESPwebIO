@@ -13,7 +13,7 @@ const String espGPIO::help()
         "  analog=pins ... analog input mode\r\n"
         "  mode=pins ... query pin mode\r\n"
         "\npins is a list of comma separated GPIO numbers, e.g.\r\n"
-        "  http://webIO/GPIO/state=22,23 reading state of GPIO pins 22 and 23\r\n";
+        "  http://webIO/GPIO/state=22,23 reading state of GPIO pins 22 and 23";
 }
 
 espGPIO::espGPIO()
@@ -189,7 +189,7 @@ String espGPIO::parse(String command, String numberList)
         else if (command == "analog")
             temp = modeAnalog(pin);
         else
-            temp = "invalid keyword " + command;
+            temp = "\"invalid keyword\"";
         // assemble result string
         addResponse(result, temp, ",");
     }

@@ -17,7 +17,7 @@ const String espADC::help()
         "  scale=float ... set scaling (default 1.0)\r\n"
         "\nreading input (if pins is omitted, use value saved from pins=...)\r\n"
         "  raw=pins ... read as is (uint)\r\n"
-        "  value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
+        "  value=pins ... read scaled value=(raw-offset)*scale (float)";
 }
 
 espADC::espADC(adc_attenuation_t att)
@@ -223,7 +223,7 @@ String espADC::parse(String command, String value)
     else if (command == "value")
         result = parseList(command, value);
     else
-        result = "invalid keyword " + command;
+        result = "\"invalid keyword\"";
     // complete result as JSON
     if (result.length()==0)
         return ""; // no output generated

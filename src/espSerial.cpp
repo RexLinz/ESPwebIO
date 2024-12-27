@@ -19,7 +19,7 @@ const String espSerial::help()
         "\nreading input\r\n"
         "  read ... return all characters available in buffer\r\n"
         "  readln ... return single line (removing configured line termination)"
-        "NOTE: settings default to 8,N,1\r\n";
+        "NOTE: settings default to 8,N,1";
 }
 
 String espSerial::setTerm(String value)
@@ -93,7 +93,7 @@ String espSerial::parse(String command, String value)
     else if (command == "readln")
         return readln();
     else
-        result = "\"invalid keyword " + command + "\"";
+        result = "\"invalid keyword\"";
     // complete result as JSON
     if (result.length()==0)
         return ""; // no output generated
