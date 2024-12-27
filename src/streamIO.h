@@ -12,16 +12,16 @@
 class streamIO : private espRoot
 {
 private:
-    String _endOfLine;
+    String _endOfBlock;
     String rxBuffer;
     String argName;
     String argValue;
     void nextArg(String &args); // extract next argument from list, store in argName and argValue
     String streamJSON(espRoot &base, String args);
-    String streamText(espRoot &base, String args);
+    String streamSerial(espSerial &base, String args);
 public:
-    streamIO(String termination="\r\n") : _endOfLine(termination) {};
-    void setTerm(String termination) { _endOfLine = termination; };
+    streamIO(String termination="\004") : _endOfBlock(termination) {}; // 004 = End Of Transmission (EOT)
+    void hostTerm(String termination) { _endOfBlock = termination; };
     void parse(Stream &s);
 };
 

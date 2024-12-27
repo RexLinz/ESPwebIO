@@ -18,8 +18,6 @@
 // this application's host name to publish on network
 #define WIFI_HOST "WebIO"
 
-//WiFiServer tcpServer(8080);
-
 // connect to WiFi network or create access point
 void connectWiFi()
 {
@@ -62,6 +60,11 @@ void connectWiFi()
     Serial.println();
 }
 
+#ifdef _STREAMIO_H_
+WiFiServer tcpServer(1026); // we are serving at port xxx
+WiFiClient tcpClient; // connecting client
+#endif
+
 void setup() 
 {
     Serial.begin(115200);
@@ -73,21 +76,27 @@ void setup()
         Serial.read(); // clear input
 
     connectWiFi(); // connect to WiFi network or create access point
+#ifdef _HTTPIO_H_
     startHTTP();   // start parsing of http requests
-//    tcpServer.begin();
+#endif
+#ifdef _STREAMIO_H_
+    tcpServer.begin();
+#endif
 }
 
 // https://docs.arduino.cc/language-reference/en/functions/wifi/server/ 
 
 void loop() 
 {
-    delay(100); // anything handled in callbacks
-/*
-    static WiFiClient tcpClient;
-    webStream.parse(Serial); // should be able to parse from TCP and UDP as well
-    if (tcpClient.connected())
+    delay(10); // anything handled in callbacks
+#ifdef _STREAMIO_H_
+    if (tcpClient.connected()) // parse from tcp connection
         webStream.parse(tcpClient);
     else
+    {
         tcpClient = tcpServer.available();
-*/
+        if (tcpClient.connected()) // new connection
+            Serial.println("client connected from " + tcpClient.remoteIP().toString());
+    }
+#endif
 }
