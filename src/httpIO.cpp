@@ -38,27 +38,6 @@ void httpJSON(espRoot &base, AsyncWebServerRequest *request)
     }
 }
 
-/*
-// parse the arguments using the parser from the given object
-// return plain text string
-void httpText(espRoot &base, AsyncWebServerRequest *request)
-{
-    String message = "";
-    if (request->args() == 0)
-        request->send(200, "text/plain", base.help());
-    // process all arguments from request
-    else 
-    {
-        for (uint8_t i = 0; i < request->args(); i++) 
-        {
-            String response = base.parse(request->argName(i), request->arg(i));
-            base.addResponse(message, response, "\r\n");
-        }
-        request->send(200, "text/plain", message);
-    }
-}
-*/
-
 // /GPIO callback
 void httpGPIO(AsyncWebServerRequest *request)
 {
@@ -67,7 +46,6 @@ void httpGPIO(AsyncWebServerRequest *request)
 
 void httpSerial(espRoot &base, AsyncWebServerRequest *request)
 {
-    bool asText = false;
     if ((request->args()==1) &&  (request->argName(0U).substring(0,4)=="read")) 
     {   // we have just read or readln?
         // -> these respond sending plain text!
@@ -146,7 +124,7 @@ void httpNotFound(AsyncWebServerRequest *request)
     message += "\n";
     for (uint8_t i = 0; i < request->args(); i++) 
     {
-        message += " " + request->argName(i) + ": " + request->arg(i) + "\n";
+        message += "  " + request->argName(i) + ": " + request->arg(i) + "\n";
     }
     request->send(200, "text/plain", message);
 }
