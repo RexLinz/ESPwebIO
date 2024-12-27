@@ -90,13 +90,9 @@ void loop()
 {
     delay(10); // anything handled in callbacks
 #ifdef _STREAMIO_H_
-    if (tcpClient.connected()) // parse from tcp connection
-        webStream.parse(tcpClient);
+    if (tcpClient.connected()) 
+        webStream.parse(tcpClient); // parse from tcp connection
     else
-    {
-        tcpClient = tcpServer.available();
-        if (tcpClient.connected()) // new connection
-            Serial.println("client connected from " + tcpClient.remoteIP().toString());
-    }
+        tcpClient = tcpServer.available(); // new client available?
 #endif
 }
