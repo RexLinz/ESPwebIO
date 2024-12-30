@@ -5,13 +5,13 @@
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
-#define WEBIO_VERSION "WebIO version 2.1\r\n"
+#define WEBIO_VERSION "WebIO version 2.2\r\n"
 
 // some utility functions which might be useful to several parsers 
 class espRoot
 {
 protected:
-    // get the next uint8 value from list, remove that from list
+    // get the next int value from list, remove that from list
     static int nextInt(String &list, String delim=",");
     // get the next float value from separated list, remove that from list
     static float nextFloat(String &list, String delim=",");
@@ -136,10 +136,36 @@ private:
 public:
     espADC(adc_attenuation_t att=ADC_6db); // default, best performance of ADC
     const String help();
-    String parse(String command, String value); // parameters to be determined
+    String parse(String command, String value);
 };
 extern espADC webADC;
 
+// (LED) PWM, also suitable to be used as RC servo output
+class espPWM : public espRoot
+{
+private:
+    unsigned long _frequency = 50UL;
+    unsigned _bits = 16;
+    static const int NUM_CHANNELS = 16;
+    unsigned _pins[NUM_CHANNELS];
+    uint32_t maxDutyVal(uint8_t channel);
+    uint32_t clipDuty(uint8_t channel, uint32_t val);
+    String setFrequency(String freq);
+    String setResolution(String bits);
+    String initChannel(uint8_t channel, uint8_t pin);
+    String mapChannels(String args);
+    String stopChannels(String args);
+    String setMicroSeconds(uint8_t channel, uint32_t microSeconds);
+    String setWidth(String args);
+//    String setDuty(uint8_t channel, float duty); // range 0.0 ... 1.0
+    String setDuty(String args); // range 0.0 ... 1.0
+public:
+    espPWM();
+    const String help();
+    String parse(String command, String value);
+
+};
+extern espPWM webPWM;
 /* 
 TODO future classes to be implemented
 

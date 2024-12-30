@@ -149,6 +149,7 @@ resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V
 
 ## Revision history
 
+- v2.2 added PWM controller
 - V2.1 added stream based connection, e.g. TCP or serial
 - V2.0 reworked to get all but help and serial read/readln as JSON
 - V1.4 ADC configuration per pin

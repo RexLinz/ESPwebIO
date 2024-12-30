@@ -64,9 +64,10 @@ const String espRoot::help()
         "available subsystems\r\n"
         "  /status ... returning system status\r\n"
         "  /GPIO\r\n"
-        "  /Serial = /Serial0, /Serial1, Serial2\r\n"
+        "  /Serial = /Serial0, /Serial1, /Serial2\r\n"
         "  /DAC1, /DAC2\r\n"
         "  /ADC\r\n"
+        "  /PWM\r\n"
         "requesting any subsystem without further parameters will return subsystem's help\r\n";
 }
 

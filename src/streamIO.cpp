@@ -95,6 +95,8 @@ void streamIO::parse(Stream & s)
         message = streamJSON(webDAC2, args);
     else if (url == "/ADC")
         message = streamJSON(webADC, args);
+    else if (url == "/PWM")
+        message = streamJSON(webPWM, args);
     else
         s.println("undefined url: \"" + url + "\""); 
     s.print(message + _endOfBlock);

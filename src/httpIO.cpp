@@ -113,6 +113,12 @@ void httpADC(AsyncWebServerRequest *request)
     httpJSON(webADC, request);
 }
 
+// PWM callback (using LED PWM controller LEDC of ESP)
+void httpPWM(AsyncWebServerRequest *request)
+{
+    httpJSON(webPWM, request);
+}
+
 // display some debugging information 
 // for any request not handled else
 void httpNotFound(AsyncWebServerRequest *request) 
@@ -148,6 +154,8 @@ void startHTTP()
     server.on("/DAC2", httpDAC2);
     // analog to digital converter
     server.on("/ADC", httpADC);
+    // PWM controller
+    server.on("/PWM", httpPWM);
 
     // body data handling for binary IO to serial
     // https://github.com/me-no-dev/ESPAsyncWebServer#body-data-handling
