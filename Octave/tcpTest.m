@@ -14,17 +14,17 @@ end
 configureTerminator(webIO, 4); % 004 = End Of Text (EOT)
 flush(webIO);
 
-switch 6
+switch 4
   case 1 % get status and root help
     disp(writeread(webIO, "/status"));
     disp(writeread(webIO, "/"));
   case 2 % query GPIO help
     disp(writeread(webIO, "/GPIO"));
   case 3 % query GPIO pin values
-    disp(writeread(webIO, "/GPIO?state=21,22,23"))
-  case 4 % query GPIO pin values
+    disp(writeread(webIO, "/GPIO?state=21,22,23"));
+  case 4 % blinking LED's
     disp("blinking LED at GPIO outputs 21,23");
-    writeread(webIO, "/GPIO?output=21,22,23&set=21,22");
+    disp(writeread(webIO, "/GPIO?output=21,22,23&set=21,22&clear=23"));
     disp("press any key to stop");
     do
       disp(writeread(webIO, "/GPIO?toggle=21,23"));
