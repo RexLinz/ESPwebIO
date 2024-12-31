@@ -21,7 +21,7 @@ public:
     static String status(); // ESP status without WiFi
     virtual const String help(); // root help
 // add response to message, if message is nonempty add separator before
-    void addResponse(String &message, String response, String separator=",\r\n");
+    void addResponse(String &message, String response, String separator);
     virtual String parse(String command, String value) { return ""; };
 };
 

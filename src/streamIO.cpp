@@ -28,7 +28,7 @@ String streamIO::streamJSON(espRoot &base, String args)
     {
         nextArg(args);
         String response = base.parse(argName, argValue);
-        addResponse(message, response);
+        addResponse(message, response, ",\r\n");
     }
     return "{\r\n" + message + "\r\n}"; // JSON string   
 }
