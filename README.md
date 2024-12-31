@@ -142,13 +142,35 @@ resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V
 - raw=pins ... read as is (uint)
 - value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
 
+### PWM controller
+
+PWM is using ESP's led controller. This is also useful for RC servo drive.
+
+#### General setup
+
+Initialize these settings first, all channels using same value.  
+Default settings 
+
+- frequency=Hz ... set pulse frequency, default 50.0
+- resolution=bits ... set resolution, default 16 bits
+
+#### pin mapping and output
+
+- channels=number,... commands below work with channel list specified
+- map=pin,... map channels to GPIO pins
+- width=microseconds,... set pulse width in microseconds
+- duty=value,... duty (0.0 to 1.0)
+- value=int,... value in integer range 0...2^(resolution)-1
+- stop=channel,... stop and disable output of channel (using channel list if not specified)
+
 ## Known issues / ideas for further improvements
 
-- At the moment some commands simply ignore invalid input instead of returning error codes
-- There is no check of pin numbers or pin capabilities. For example some GPIO pins are input only and the ADC could not be used at all pins as well.
+- At the moment some commands simply ignore invalid input instead of returning error codes.
+- Check of pin capabilities is incomplete. There might be unexpected behaviour if specifying invalid pins.
 
 ## Revision history
 
+- v2.3 reworked PWM syntax, added PWM to README.md
 - v2.2 added PWM controller
 - V2.1 added stream based connection, e.g. TCP or serial
 - V2.0 reworked to get all but help and serial read/readln as JSON

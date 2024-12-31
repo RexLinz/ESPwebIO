@@ -6,13 +6,15 @@ const String espPWM::help()
     return
         "Help on PWM subsystem (using ESP's led controller)\r\n"
         "general setup (initialize first, all channels using same value)\r\n"
-        "  frequency=freq ... set pulse frequency\r\n"
-        "  resolution=bits ... set resolution\r\n"
-        "pin mapping and output (accepting sequence of channel/value pairs)\r\n"
-        "  map=channel,pin,... map channel (0..15) to GPIO pin\r\n"
-        "  width=channel,microseconds,... set pulse width in microseconds\r\n"
-        "  duty=channel,value,... duty (0.0 to 1.0)\r\n"
-        "  stop=channel,... stop and disable output of channel";
+        "  frequency=Hz ... set pulse frequency, default 50.0\r\n"
+        "  resolution=bits ... set resolution, default 16 bits\r\n"
+        "pin mapping and output\r\n"
+        "  channels=number,... commands below work with channel list specified\r\n"
+        "  map=pin,... map channels to GPIO pins\r\n"
+        "  width=microseconds,... set pulse width in microseconds\r\n"
+        "  duty=value,... duty (0.0 to 1.0)\r\n"
+        "  value=int,... value in integer range 0...2^(resolution)-1\r\n"
+        "  stop=channel,... stop and disable output of channel (all)";
 }
 
 espPWM::espPWM()
@@ -21,16 +23,18 @@ espPWM::espPWM()
         _pins[i] = -1; // not attached
 }
 
-uint32_t espPWM::maxDutyVal(uint8_t channel)
+uint32_t espPWM::maxVal(uint8_t channel)
 {
     return (16UL<<(LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.duty_resolution)) -1;
 }
 
-uint32_t espPWM::clipDuty(uint8_t channel, uint32_t val)
+uint32_t espPWM::clipVal(uint8_t channel, uint32_t val)
 {
-    uint32_t maxval = maxDutyVal(channel);
-    if (val>maxval)
-        return maxval;
+    int32_t max = maxVal(channel);
+    if (val > max)
+        return max;
+    else if (val<0)
+        return 0;
     else
         return val;
 }
@@ -47,30 +51,44 @@ String espPWM::setResolution(String bits)
     return bits; // TODO check range?
 }
 
+String espPWM::setChannels(String channelList)
+{
+    String result = "";
+    while (channelList.length()>0)
+    {
+        int channel = nextInt(channelList);
+        if ((channel<0) || (channel >= NUM_CHANNELS))
+            addResponse(result, "\"invalid\"", ",");
+        else
+            addResponse(result, String(channel), ",");
+    }
+    if (result.indexOf("invalid") == -1)
+        _channelList = result;
+    else
+        _channelList = "";
+    return result;
+}
+
 String espPWM::initChannel(uint8_t channel, uint8_t pin)
 {
-  if (channel >= NUM_CHANNELS)
-    return "\"only supporting channels 0-15\"";
   if (LEDC.channel_group[channel/8].channel[channel%8].conf0.sig_out_en)
     return "\"channel in use\"";
   if (!digitalPinCanOutput(pin)) // output available on pin?
     return "\"invalid GPIO pin\"";
-  double freq = ledcSetup(channel, _frequency, _bits); // actual frequency
+  ledcSetup(channel, _frequency, _bits);
   ledcAttachPin(pin, channel);
   ledcWrite(channel, 0);
   _pins[channel] = pin;
-  return "\"Ok\"";
+  return String(pin);
 }
 
-String espPWM::mapChannels(String args)
+String espPWM::map(String channelList, String pinList)
 {
     String result = "";
-    // split numberList into numbers separated by comma
-    // assemble returned strings to JSON like array
-    while (args.length() > 0)
+    while ((channelList.length()>0) && (pinList.length()>0))
     {
-        uint8_t channel = nextInt(args);
-        uint8_t pin = nextInt(args);
+        uint8_t channel = nextInt(channelList);
+        uint8_t pin = nextInt(pinList);
         String temp = initChannel(channel, pin);
         // assemble result string
         addResponse(result, temp, ",");
@@ -78,76 +96,64 @@ String espPWM::mapChannels(String args)
     return result;
 }
 
-String espPWM::stopChannels(String args)
+String espPWM::stop(String channelList, String userList)
 {
     String result = "";
-    // split numberList into numbers separated by comma
-    // for each number call function()
-    // assemble returned strings to JSON like array
-    while (args.length() > 0)
+    if (userList.length() > 0)
+        channelList = userList;
+    while (channelList.length() > 0)
     {
-        uint8_t channel = nextInt(args);
+        uint8_t channel = nextInt(channelList);
         String temp;
-        if (channel >= NUM_CHANNELS)
-            temp = "\"only supporting channels 0-15\"";
-        else 
-        {
-            LEDC.channel_group[channel/8].channel[channel%8].conf0.sig_out_en = 0; // stop output
-            ledcDetachPin(_pins[channel]);
-            _pins[channel] = -1;
-            temp = "\"off\"";
-        }
+        LEDC.channel_group[channel/8].channel[channel%8].conf0.sig_out_en = 0; // stop output
+        ledcDetachPin(_pins[channel]);
+        _pins[channel] = -1;
         // assemble result string
-        addResponse(result, temp, ",");
+        addResponse(result, String(channel), ",");
     }
     return result;
 }
 
-String espPWM::setMicroSeconds(uint8_t channel, uint32_t microSeconds)
-{
-    uint32_t duty = (((uint32_t)microSeconds) << _bits) / (1000000UL/(_frequency<<4));
-    ledcWrite(channel, clipDuty(channel, duty));
-    return String(microSeconds);
-}
-
-String espPWM::setWidth(String args)
+String espPWM::width(String channelList, String args)
 {
     String result = "";
-    // split numberList into numbers separated by comma
-    // assemble returned strings to JSON like array
-    while (args.length() > 0)
+    while ((channelList.length()>0) && (args.length()>0))
     {
-        uint8_t channel = nextInt(args);
-        uint32_t microseconds = nextInt(args);
-        String temp;
-        if (channel >= NUM_CHANNELS) // only valid for channels 0-15
-            temp = "\"only supporting channels 0-15\"";
-        else 
-            temp = setMicroSeconds(channel, microseconds);
-        addResponse(result, temp, ",");
+        uint8_t channel = nextInt(channelList);
+        float microseconds = nextFloat(args);
+        uint32_t clkDiv = LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.clock_divider;
+        float val = 80.0f*microseconds*256*16/clkDiv;
+        ledcWrite(channel, clipVal(channel, val));
+        addResponse(result, String(microseconds), ",");
     }
     return result;
 }
 
-String espPWM::setDuty(String args) // range 0.0 ... 1.0
+String espPWM::duty(String channelList, String args) // range 0.0 ... 1.0
 {
     String result = "";
     // split numberList into numbers separated by comma
     // assemble returned strings to JSON like array
-    while (args.length() > 0)
+    while ((channelList.length()>0) && (args.length()>0))
     {
-        uint8_t channel = nextInt(args);
+        uint8_t channel = nextInt(channelList);
         float duty = nextFloat(args);
-        String temp;
-        if (channel >= NUM_CHANNELS) // only valid for channels 0-15
-            temp = "\"only supporting channels 0-15\"";
-        else 
-        {
-            uint32_t maxval = maxDutyVal(channel);
-            ledcWrite(channel, clipDuty(channel, duty*maxval));
-            temp = String(duty);
-        }
-        addResponse(result, temp, ",");
+        uint32_t maxval = maxVal(channel);
+        ledcWrite(channel, clipVal(channel, duty*maxval));
+        addResponse(result, String(duty), ",");
+    }
+    return result;
+}
+
+String espPWM::val(String channelList, String args) // integers
+{
+    String result = "";
+    while ((channelList.length()>0) && (args.length()>0))
+    {
+        uint8_t channel = nextInt(channelList);
+        int32_t val = nextInt(args);
+        ledcWrite(channel, clipVal(channel, val));
+        addResponse(result, String(val), ",");
     }
     return result;
 }
@@ -160,14 +166,18 @@ String espPWM::parse(String command, String value)
         result = setFrequency(value); // save for use by following commands
     else if (command == "resolution")
         result = setResolution(value);
+    else if (command == "channels")
+        result = setChannels(value);
     else if (command == "map")
-        result = mapChannels(value); // scan list of channel/value pairs
+        result = map(_channelList, value); // scan list of channel/value pairs
     else if (command == "stop")
-        result = stopChannels(value); // scan list of channel/value pairs
+        result = stop(_channelList, value); // useing value if specified, else _channelList
     else if (command == "width")
-        result = setWidth(value); // scan list of channel/value pairs
+        result = width(_channelList, value); // scan list of channel/value pairs
     else if (command == "duty")
-        result = setDuty(value); // scan list of channel/value pairs
+        result = duty(_channelList, value); // scan list of channel/value pairs
+    else if (command == "val")
+        result = val(_channelList, value);
     else
         result = "\"invalid keyword\"";
     // complete result as JSON

@@ -5,7 +5,7 @@
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
-#define WEBIO_VERSION "WebIO version 2.2\r\n"
+#define WEBIO_VERSION "WebIO version 2.3\r\n"
 
 // some utility functions which might be useful to several parsers 
 class espRoot
@@ -148,17 +148,18 @@ private:
     unsigned _bits = 16;
     static const int NUM_CHANNELS = 16;
     unsigned _pins[NUM_CHANNELS];
-    uint32_t maxDutyVal(uint8_t channel);
-    uint32_t clipDuty(uint8_t channel, uint32_t val);
+    String _channelList;
+    uint32_t maxVal(uint8_t channel);
+    uint32_t clipVal(uint8_t channel, uint32_t val);
     String setFrequency(String freq);
     String setResolution(String bits);
+    String setChannels(String channelList);
     String initChannel(uint8_t channel, uint8_t pin);
-    String mapChannels(String args);
-    String stopChannels(String args);
-    String setMicroSeconds(uint8_t channel, uint32_t microSeconds);
-    String setWidth(String args);
-//    String setDuty(uint8_t channel, float duty); // range 0.0 ... 1.0
-    String setDuty(String args); // range 0.0 ... 1.0
+    String map(String channelList, String pinList);
+    String stop(String channelList, String arg);
+    String width(String channelList, String args);
+    String duty(String channelList, String args); // range 0.0 ... 1.0
+    String val(String channelList, String args); // range 0 to (2^bits)-1
 public:
     espPWM();
     const String help();
