@@ -39,12 +39,12 @@ Commands where **pins** have to be specified accept a list of comma separated **
 - [/Serial](#serial) sending and receiving from serial lines (UART)
 - [/DAC](#dac) digital to analog converter output
 - [/ADC](#adc) reading analog to digital converter input
+- [/PWM](#pwm-controller) PWM output (e.g. LEDs or RC servos)
 
 ### Planned in future
 
 - `/I2C` IO via I2C
 - `/SPI` IO via SPI
-- `/PWM` PWM output
 - ...
 
 ## Subsystem description
@@ -149,7 +149,7 @@ PWM is using ESP's led controller. This is also useful for RC servo drive.
 #### General setup
 
 Initialize these settings first, all channels using same value.  
-Default settings 
+Default settings are fine for RC servos using with command to set output
 
 - frequency=Hz ... set pulse frequency, default 50.0
 - resolution=bits ... set resolution, default 16 bits
