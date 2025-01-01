@@ -6,14 +6,14 @@ const String espPWM::help()
     return
         "Help on PWM subsystem (using ESP's led controller)\r\n"
         "general setup (initialize first, all channels using same value)\r\n"
-        "  frequency=Hz ... set pulse frequency, default 50.0\r\n"
-        "  resolution=bits ... set resolution, default 16 bits\r\n"
+        "  frequency=Hz ... set pulse frequency (integer, default 50)\r\n"
+        "  resolution=bits ... set resolution (default 16 bits)\r\n"
         "pin mapping and output\r\n"
         "  channels=number,... commands below work with channel list specified\r\n"
         "  map=pin,... map channels to GPIO pins\r\n"
         "  width=microseconds,... set pulse width in microseconds\r\n"
         "  duty=value,... duty (0.0 to 1.0)\r\n"
-        "  value=int,... value in integer range 0...2^(resolution)-1\r\n"
+        "  value=int,... value in integer range 0...(2^resolution)-1\r\n"
         "  stop=channel,... stop and disable output of channel (all)";
 }
 
@@ -25,7 +25,7 @@ espPWM::espPWM()
 
 uint32_t espPWM::maxVal(uint8_t channel)
 {
-    return (16UL<<(LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.duty_resolution)) -1;
+    return (1UL<<(LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.duty_resolution)) -1;
 }
 
 uint32_t espPWM::clipVal(uint8_t channel, uint32_t val)
@@ -114,46 +114,90 @@ String espPWM::stop(String channelList, String userList)
     return result;
 }
 
-String espPWM::width(String channelList, String args)
+String espPWM::width(String channelList, String valueList)
 {
     String result = "";
-    while ((channelList.length()>0) && (args.length()>0))
-    {
-        uint8_t channel = nextInt(channelList);
-        float microseconds = nextFloat(args);
-        uint32_t clkDiv = LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.clock_divider;
-        float val = 80.0f*microseconds*256*16/clkDiv;
-        ledcWrite(channel, clipVal(channel, val));
-        addResponse(result, String(microseconds), ",");
+    if (valueList.indexOf(',') < 0) // list or just a single value?
+    { // just single configuration for all channels
+        float microseconds = nextFloat(valueList);
+        while (channelList.length()>0)
+        {
+            uint8_t channel = nextInt(channelList);
+            float clkMHz= (LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.tick_sel) ? 80.0f : 1.0f;
+            uint32_t clkDiv = LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.clock_divider;
+            float val = clkMHz/clkDiv*microseconds*256; // has 8 fractional bits
+            ledcWrite(channel, clipVal(channel, val));
+            addResponse(result, String(microseconds), ",");
+        }
+    }
+    else     
+    { // individual configurations
+        while ((channelList.length()>0) && (valueList.length()>0))
+        {
+            uint8_t channel = nextInt(channelList);
+            float clkMHz= (LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.tick_sel) ? 80.0f : 1.0f;
+            uint32_t clkDiv = LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.clock_divider;
+            float microseconds = nextFloat(valueList);
+            float val = clkMHz/clkDiv*microseconds*256; // has 8 fractional bits
+            ledcWrite(channel, clipVal(channel, val));
+            addResponse(result, String(microseconds), ",");
+        }
     }
     return result;
 }
 
-String espPWM::duty(String channelList, String args) // range 0.0 ... 1.0
+String espPWM::duty(String channelList, String valueList) // range 0.0 ... 1.0
 {
     String result = "";
     // split numberList into numbers separated by comma
     // assemble returned strings to JSON like array
-    while ((channelList.length()>0) && (args.length()>0))
-    {
-        uint8_t channel = nextInt(channelList);
-        float duty = nextFloat(args);
-        uint32_t maxval = maxVal(channel);
-        ledcWrite(channel, clipVal(channel, duty*maxval));
-        addResponse(result, String(duty), ",");
+    if (valueList.indexOf(',') < 0) // list or just a single value?
+    { // just single configuration for all channels
+        float duty = nextFloat(valueList);
+        while (channelList.length()>0)
+        {
+            uint8_t channel = nextInt(channelList);
+            uint32_t maxval = maxVal(channel);
+            ledcWrite(channel, clipVal(channel, duty*maxval));
+            addResponse(result, String(duty), ",");
+        }
+    }
+    else     
+    { // individual configurations
+        while ((channelList.length()>0) && (valueList.length()>0))
+        {
+            uint8_t channel = nextInt(channelList);
+            float duty = nextFloat(valueList);
+            uint32_t maxval = maxVal(channel);
+            ledcWrite(channel, clipVal(channel, duty*maxval));
+            addResponse(result, String(duty), ",");
+        }
     }
     return result;
 }
 
-String espPWM::val(String channelList, String args) // integers
+String espPWM::val(String channelList, String valueList) // integers
 {
     String result = "";
-    while ((channelList.length()>0) && (args.length()>0))
-    {
-        uint8_t channel = nextInt(channelList);
-        int32_t val = nextInt(args);
-        ledcWrite(channel, clipVal(channel, val));
-        addResponse(result, String(val), ",");
+    if (valueList.indexOf(',') < 0) // list or just a single value?
+    { // just single configuration for all channels
+        int32_t val = nextInt(valueList);
+        while (channelList.length()>0)
+        {
+            uint8_t channel = nextInt(channelList);
+            ledcWrite(channel, clipVal(channel, val));
+            addResponse(result, String(val), ",");
+        }
+    }
+    else
+    { // individual configurations
+        while ((channelList.length()>0) && (valueList.length()>0))
+        {
+            uint8_t channel = nextInt(channelList);
+            int32_t val = nextInt(valueList);
+            ledcWrite(channel, clipVal(channel, val));
+            addResponse(result, String(val), ",");
+        }
     }
     return result;
 }

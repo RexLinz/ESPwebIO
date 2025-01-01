@@ -2,35 +2,34 @@
 
 PWM = "http://WebIO/PWM";
 
-PWMhelp = webread(PWM); % get help
-if length(PWMhelp) == 0
-  error("no connection to WebIO");
+webread("http://WebIO") % version information
+
+%PWMhelp = webread(PWM); % get help
+%if length(PWMhelp) == 0
+%  error("no connection to WebIO");
+%end
+%disp(PWMhelp);
+
+for f = [50 1]
+  webwrite(PWM, "frequency", num2str(f))
+  for c = [0 8]
+    webwrite(PWM,
+      "channels", num2str(c),
+      "map", "21"
+    )
+    for val = 2^16*[0.1 0.5 0.9]
+      webwrite(PWM, "val", num2str(val))
+      pause
+    end
+    for duty = [0.1 0.5 0.9]
+      webwrite(PWM, "duty", num2str(duty, "%.3f"))
+      pause
+    end
+    for w = [0.1 0.5 0.9]
+      webwrite(PWM, "width", num2str(1E6*w/f))
+      pause
+    end
+    webwrite(PWM, "stop", "")
+  end
 end
-disp(PWMhelp);
-
-webwrite(PWM,
-  "frequency", "5",
-  "channels", "0,1",
-  "map", "21,23"
-)
-
-webwrite(PWM,
-  "duty", "0.01,0.1"
-);
-
-webwrite(PWM,
-  "frequency", "1",
-  "channels", "2",
-  "map", "22",
-  "val", "500"
-)
-
-disp("press any key to stop");
-while length(kbhit(1)) == 0
-end
-disp("  stopped");
-
-webwrite(PWM,
-  "stop", "0,1,2"
-)
 
