@@ -74,14 +74,16 @@ const String espRoot::help()
 {
     return 
         WEBIO_VERSION
-        "available subsystems\r\n"
+        "Available subsystems\r\n"
         "  /status ... returning system status\r\n"
         "  /GPIO\r\n"
         "  /Serial = /Serial0, /Serial1, /Serial2\r\n"
         "  /DAC1, /DAC2\r\n"
         "  /ADC\r\n"
         "  /PWM\r\n"
-        "requesting any subsystem without further parameters will return subsystem's help\r\n";
+        "  /I2C = /I2C0, /I2C1\r\n"
+        "Requesting any subsystem without further parameters will return subsystem's help.\r\n"
+        "More documentation available at https://github.com/RexLinz/ESPwebIO";
 }
 
 String espRoot::status()

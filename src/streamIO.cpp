@@ -97,6 +97,12 @@ void streamIO::parse(Stream & s)
         message = streamJSON(webADC, args);
     else if (url == "/PWM")
         message = streamJSON(webPWM, args);
+    else if (url == "/I2C")
+        message = streamJSON(webI2C0, args);
+    else if (url == "/I2C0")
+        message = streamJSON(webI2C0, args);
+    else if (url == "/I2C1")
+        message = streamJSON(webI2C1, args);
     else
         s.println("undefined url: \"" + url + "\""); 
     s.print(message + _endOfBlock);

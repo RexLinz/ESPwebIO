@@ -1,29 +1,4 @@
 #include "webIO.h"
-#include "Wire.h"
-
-class espI2C : public espRoot
-{
-private:
-    TwoWire &bus;
-    int sdaPin = -1; // default pin
-    int sclPin = -1; // default pin
-    uint32_t frequency = 0;
-    String setPins(String args);
-    String setFrequency(String Hz);
-    String begin();
-    String end();
-    uint8_t address;
-    String setAddress(String address);
-    String write(String hexArgs);
-    String read(String numBytes);
-public:
-    espI2C(TwoWire &twi) : bus(twi) {};
-    const String help();
-    String parse(String command, String value);
-};
-
-espI2C I2C0(Wire);
-espI2C I2C1(Wire1);
 
 const String espI2C::help()
 {
@@ -35,7 +10,7 @@ const String espI2C::help()
         "  begin ... open interface\r\n"
         "  end ... end interface\r\n"
         "\nsending and receiving data\r\n"
-        "  address=n ... set read/write address\r\n"
+        "  address=hex ... set read/write address\r\n"
         "  write=hex,... write out to slave, return number of bytes done\r\n"
         "  read=num ... read num bytes, return as hex values";
 }
@@ -78,7 +53,7 @@ String espI2C::setAddress(String hexAddress)
     if (hexAddress.length()==0)
         return "\"missing\"";
     else 
-        address = strtol(hexAddress.c_str(), 0, 16);
+        address = nextHex(hexAddress);
     return String(address, HEX);
 }
 
@@ -137,3 +112,6 @@ String espI2C::parse(String command, String value)
         result =  "[" + result + "]"; // output is array
     return "\"" + command + "\":" + result;
 }
+
+espI2C webI2C0(Wire);
+espI2C webI2C1(Wire1);

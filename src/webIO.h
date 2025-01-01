@@ -1,11 +1,12 @@
 #ifndef _WEBIO_H_
 #define _WEBIO_H_
 #include <Arduino.h>
+#include "Wire.h"
 
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
-#define WEBIO_VERSION "WebIO version 2.3\r\n"
+#define WEBIO_VERSION "WebIO version 2.5\r\n"
 
 // some utility functions which might be useful to several parsers 
 class espRoot
@@ -80,7 +81,6 @@ public:
     const String help();
     String parse(String command, String value);
 };
-
 extern espSerial webSerial0;
 extern espSerial webSerial1;
 extern espSerial webSerial2;
@@ -105,7 +105,6 @@ public:
     const String help();
     String parse(String command, String value);
 };
-
 extern espDAC webDAC1;
 extern espDAC webDAC2;
 
@@ -169,14 +168,32 @@ public:
 
 };
 extern espPWM webPWM;
-/* 
-TODO future classes to be implemented
 
-class espI2C
+class espI2C : public espRoot
 {
 private:
+    TwoWire &bus;
+    int sdaPin = -1; // default pin
+    int sclPin = -1; // default pin
+    uint32_t frequency = 0;
+    String setPins(String args);
+    String setFrequency(String Hz);
+    String begin();
+    String end();
+    uint8_t address;
+    String setAddress(String address);
+    String write(String hexArgs);
+    String read(String numBytes);
 public:
+    espI2C(TwoWire &twi) : bus(twi) {};
+    const String help();
+    String parse(String command, String value);
 };
+extern espI2C webI2C0;
+extern espI2C webI2C1;
+
+/* 
+TODO future classes to be implemented
 
 class espSPI
 {

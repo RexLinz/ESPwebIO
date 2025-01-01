@@ -119,6 +119,16 @@ void httpPWM(AsyncWebServerRequest *request)
     httpJSON(webPWM, request);
 }
 
+void httpI2C0(AsyncWebServerRequest *request)
+{
+    httpJSON(webI2C0, request);
+}
+
+void httpI2C1(AsyncWebServerRequest *request)
+{
+    httpJSON(webI2C1, request);
+}
+
 // display some debugging information 
 // for any request not handled else
 void httpNotFound(AsyncWebServerRequest *request) 
@@ -156,6 +166,10 @@ void startHTTP()
     server.on("/ADC", httpADC);
     // PWM controller
     server.on("/PWM", httpPWM);
+    // PWM controller
+    server.on("/I2C", httpI2C0);
+    server.on("/I2C0", httpI2C0);
+    server.on("/I2C0", httpI2C1);
 
     // body data handling for binary IO to serial
     // https://github.com/me-no-dev/ESPAsyncWebServer#body-data-handling

@@ -40,10 +40,10 @@ Commands where **pins** have to be specified accept a list of comma separated **
 - [/DAC](#dac) digital to analog converter output
 - [/ADC](#adc) reading analog to digital converter input
 - [/PWM](#pwm-controller) PWM output (e.g. LEDs or RC servos)
+- [/I2C](#i2c) IO via I2C bus (untested at the moment)
 
 ### Planned in future
 
-- `/I2C` IO via I2C
 - `/SPI` IO via SPI
 - ...
 
@@ -163,6 +163,31 @@ Default settings are fine for RC servos using with command to set output
 - value=int,... value in integer range 0...2^(resolution)-1
 - stop=channel,... stop and disable output of channel (using channel list if not specified)
 
+### I2C
+
+***UNTESTED at the moment***
+
+Communication to external chips via I2C bus, **ESP32 is master**.
+
+**NOTE** As address and data require binary values all are specified and returned as hexadecimal (2 digits per byte).
+
+- **/I2C0** equals "Wire" on Arduino. Also available as **/I2C**  
+default pins sdy=21, scl=22
+- **/I2C1** equals "Wire1" on Arduino. Not available on Dev Kit C without manual pin assignment
+
+#### general settings
+
+- pins=scl,sda ... set pins to use
+- freqency=Hz ... set frequency
+- begin ... open interface
+- end ... end interface
+
+#### nsending and receiving data
+
+- address=hex ... set read/write address
+- write=hex,... write out to slave, return number of bytes done
+- read=num ... read num bytes, return as hex values
+
 ## Known issues / ideas for further improvements
 
 - At the moment some commands simply ignore invalid input instead of returning error codes.
@@ -170,8 +195,10 @@ Default settings are fine for RC servos using with command to set output
 
 ## Revision history
 
-- v2.3 reworked PWM syntax, added PWM to README.md
-- v2.2 added PWM controller
+- V2.5 added I2C (untested)
+- V2.4 debugged PWM
+- V2.3 reworked PWM syntax, added PWM to README.md
+- V2.2 added PWM controller
 - V2.1 added stream based connection, e.g. TCP or serial
 - V2.0 reworked to get all but help and serial read/readln as JSON
 - V1.4 ADC configuration per pin
