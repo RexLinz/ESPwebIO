@@ -13,6 +13,8 @@ class espRoot
 protected:
     // get the next int value from list, remove that from list
     static int nextInt(String &list, String delim=",");
+    // get the next int value from list of hexadecimals, remove that from list
+    static int nextHex(String &list, String delim=",");
     // get the next float value from separated list, remove that from list
     static float nextFloat(String &list, String delim=",");
     // get the next String value from separated list, remove that from list

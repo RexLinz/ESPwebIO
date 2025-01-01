@@ -15,6 +15,19 @@ int espRoot::nextInt(String &list, String delim)
     return val;
 }
 
+// get the next int value from comma separated list of hexadecimal values, 
+// remove that from list
+int espRoot::nextHex(String &list, String delim)
+{
+    int val = strtol(list.c_str(), 0, 16);
+    int n = list.indexOf(delim);
+    if (n>=0)
+        list = list.substring(n+1);
+    else // last one has been processed
+        list = "";
+    return val;
+}
+
 // get the next float value from comma separated list, 
 // remove that from list
 float espRoot::nextFloat(String &list, String delim)
