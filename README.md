@@ -172,7 +172,7 @@ Communication to external chips via I2C bus, **ESP32 is master**.
 **NOTE** As address and data require binary values all are specified and returned as hexadecimal (2 digits per byte).
 
 - **/I2C0** equals "Wire" on Arduino. Also available as **/I2C**  
-default pins sdy=21, scl=22
+default pins sda=21, scl=22
 - **/I2C1** equals "Wire1" on Arduino. Not available on Dev Kit C without manual pin assignment
 
 #### general settings
