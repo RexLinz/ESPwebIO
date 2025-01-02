@@ -148,20 +148,21 @@ PWM is using ESP's led controller. This is also useful for RC servo drive.
 
 #### General setup
 
-Initialize these settings first, all channels using same value.  
-Default settings are fine for RC servos using with command to set output
+Initialize these settings first, channels initialized next will use that settings.  
+Default settings are fine for RC servos using `width` command to set output.
 
-- frequency=Hz ... set pulse frequency, default 50.0
-- resolution=bits ... set resolution, default 16 bits
+- frequency=Hz ... set pulse frequency (integer) default 50 Hz
+- resolution=bits ... set resolution, default 16 bits, maximum 20 bits
 
 #### pin mapping and output
 
-- channels=number,... commands below work with channel list specified
+- channels=number,... commands below work with channel list specified here
 - map=pin,... map channels to GPIO pins
 - width=microseconds,... set pulse width in microseconds
 - duty=value,... duty (0.0 to 1.0)
-- value=int,... value in integer range 0...2^(resolution)-1
-- stop=channel,... stop and disable output of channel (using channel list if not specified)
+- value=int,... value in integer range 0...2^(bits)-1
+- stop=channel,... stop and disable output of channel(s)
+Using channel list if not specified in stop command
 
 ### I2C
 
@@ -172,19 +173,20 @@ Communication to external chips via I2C bus, **ESP32 is master**.
 **NOTE** As address and data require binary values all are specified and returned as hexadecimal (2 digits per byte).
 
 - **/I2C0** equals "Wire" on Arduino. Also available as **/I2C**  
-default pins sda=21, scl=22
-- **/I2C1** equals "Wire1" on Arduino. Not available on Dev Kit C without manual pin assignment
+Default pins sda=21, scl=22
+- **/I2C1** equals "Wire1" on Arduino.  
+Not available on Dev Kit C without manual pin assignment.
 
 #### general settings
 
 - pins=scl,sda ... set pins to use
-- freqency=Hz ... set frequency
+- freqency=Hz ... set I2C bus clock frequency
 - begin ... open interface
 - end ... end interface
 
-#### nsending and receiving data
+#### sending and receiving data
 
-- address=hex ... set read/write address
+- address=hex ... set slave address for following read/write commands
 - write=hex,... write out to slave, return number of bytes done
 - read=num ... read num bytes, return as hex values
 
