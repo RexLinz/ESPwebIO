@@ -1,7 +1,7 @@
 #ifndef _WEBIO_H_
 #define _WEBIO_H_
 #include <Arduino.h>
-#include "Wire.h"
+#include <Wire.h>
 
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
@@ -180,7 +180,7 @@ private:
     String setFrequency(String Hz);
     String begin();
     String end();
-    uint8_t address;
+    int address;
     String setAddress(String address);
     String write(String hexArgs);
     String read(String numBytes);

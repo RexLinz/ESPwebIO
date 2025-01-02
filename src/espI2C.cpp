@@ -39,7 +39,10 @@ String espI2C::setFrequency(String args)
 
 String espI2C::begin()
 {
-    bus.begin(sdaPin, sclPin, frequency);
+    if (bus.begin(sdaPin, sclPin, frequency))
+        return "\"Ok\"";
+    else
+        return "\"Error\""; 
 }
 
 String espI2C::end()
