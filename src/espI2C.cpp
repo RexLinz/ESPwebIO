@@ -6,8 +6,10 @@ const String espI2C::help()
         "Help on I2C subsystem /I2C0 and /I2C1\r\n"
         "\ngeneral settings\r\n"
         "  pins=scl,sda ... set pins to use\r\n"
-        "  freqency=Hz ... set frequency\r\n"
+        "  freqency=Hz ... set frequency (default 100 kHz, max 400 kHz)\r\n"
         "  begin ... open interface\r\n"
+        "  scan ... scan bus and return address(es) of device(s) found\r\n"
+        "           last one found will be set as default address\r\n"
         "  end ... end interface\r\n"
         "\nsending and receiving data\r\n"
         "  address=hex ... set read/write address\r\n"
@@ -57,7 +59,7 @@ String espI2C::setAddress(String hexAddress)
         return "\"missing\"";
     else 
         address = nextHex(hexAddress);
-    return String(address, HEX);
+    return "\"" + String(address, HEX) + "\"";
 }
 
 String espI2C::write(String hexArgs)
@@ -86,7 +88,24 @@ String espI2C::read(String numBytes)
         int b = bus.read();
         addResponse(response, String(b,HEX), ",");
     }
-    return "\""+response+"\"";
+    return "\""+response+"\""; // as string, values are hexadecimal!
+}
+
+String espI2C::scan()
+{
+    String response = "";
+    for (int a = 0; a<128; a++)
+    {
+        bus.beginTransmission(a);
+        if (bus.endTransmission() == 0)
+        {
+            addResponse(response, String(a, HEX), ",");
+            address = a; // remember last one found
+        }
+    }
+    if (response.length() == 0)
+        response = "\"no devices found\"";
+    return "\"" + response + "\""; // as string, values are hexadecimal
 }
 
 String espI2C::parse(String command, String value)
@@ -106,6 +125,8 @@ String espI2C::parse(String command, String value)
         result = write(value);
     else if (command == "read")
         result = read(value); 
+    else if (command == "scan")
+        result = scan(); 
     else
         result = "\"invalid keyword\"";
     // complete result as JSON

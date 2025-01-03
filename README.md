@@ -40,7 +40,7 @@ Commands where **pins** have to be specified accept a list of comma separated **
 - [/DAC](#dac) digital to analog converter output
 - [/ADC](#adc) reading analog to digital converter input
 - [/PWM](#pwm-controller) PWM output (e.g. LEDs or RC servos)
-- [/I2C](#i2c) IO via I2C bus (untested at the moment)
+- [/I2C](#i2c) IO via I2C bus
 
 ### Planned in future
 
@@ -166,8 +166,6 @@ Using channel list if not specified in stop command
 
 ### I2C
 
-***UNTESTED at the moment***
-
 Communication to external chips via I2C bus, **ESP32 is master**.
 
 **NOTE** As address and data require binary values all are specified and returned as hexadecimal (2 digits per byte).
@@ -197,6 +195,7 @@ Not available on Dev Kit C without manual pin assignment.
 
 ## Revision history
 
+- V3.0 tested I2C
 - V2.5 added I2C (untested)
 - V2.4 debugged PWM
 - V2.3 reworked PWM syntax, added PWM to README.md

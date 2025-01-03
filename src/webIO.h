@@ -6,7 +6,7 @@
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
-#define WEBIO_VERSION "WebIO version 2.5\r\n"
+#define WEBIO_VERSION "WebIO version 3.0\r\n"
 
 // some utility functions which might be useful to several parsers 
 class espRoot
@@ -175,7 +175,7 @@ private:
     TwoWire &bus;
     int sdaPin = -1; // default pin
     int sclPin = -1; // default pin
-    uint32_t frequency = 0;
+    uint32_t frequency = 0; // default = 100000
     String setPins(String args);
     String setFrequency(String Hz);
     String begin();
@@ -184,6 +184,7 @@ private:
     String setAddress(String address);
     String write(String hexArgs);
     String read(String numBytes);
+    String scan();
 public:
     espI2C(TwoWire &twi) : bus(twi) {};
     const String help();
