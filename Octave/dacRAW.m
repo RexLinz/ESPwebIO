@@ -14,7 +14,7 @@ do
   webwrite(DAC1, "raw", "255");
   webwrite(DAC2, "raw", "0");
   pause(1);
-until length(kbhit(1)) > 0 % end on any keystroke
+until kbhit(1) % end on any keystroke
 disp("  stopped");
 
 webwrite(DAC1, "disable", "");

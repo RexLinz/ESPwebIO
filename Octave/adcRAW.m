@@ -14,7 +14,7 @@ disp("  press any key to stop");
 do
   webread(ADC, "raw", "34,35")
   pause(1);
-until length(kbhit(1)) > 0 % end on any keystroke
+until kbhit(1) % end on any keystroke
 disp("  stopped");
 
 webwrite(DAC1, "disable", "");

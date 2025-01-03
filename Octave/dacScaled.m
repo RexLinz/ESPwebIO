@@ -22,7 +22,7 @@ do
   phi += 0.1;
   webwrite(DAC2, "value", num2str(sin(phi)));
   pause(0.5);
-until length(kbhit(1)) > 0 % end on any keystroke
+until kbhit(1) % end on any keystroke
 disp("  stopped");
 
 webwrite(DAC1, "disable", "");

@@ -31,6 +31,6 @@ do
   webwrite(server, "clear", green, "set", yellow);
   pause(1);
   webwrite(server, "clear", yellow, "set", red);
-until length(kbhit(1)) > 0 % end on any keystroke
+until kbhit(1) % end on any keystroke
 disp("  stopped");
 
