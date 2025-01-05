@@ -153,7 +153,7 @@ String espSPI::parse(String command, String value)
     else if (command == "mode")
         result = setSPImode(value);
     else if (command == "begin")
-        result = begin();
+        result = begin(value);
     else if (command == "end")
         result = end();
     else if (command == "write")
