@@ -177,7 +177,7 @@ Default pins sda=21, scl=22
 - **/I2C1** equals "Wire1" on Arduino.  
 Not available on Dev Kit C without manual pin assignment.
 
-#### general settings
+#### general I2C settings
 
 - pins=scl,sda ... set pins to use
 - freqency=Hz ... set I2C bus clock frequency
@@ -186,10 +186,36 @@ Not available on Dev Kit C without manual pin assignment.
 Last one found will be set as default address
 - end ... end interface
 
-#### sending and receiving data
+#### sending and receiving I2C data
 
 - address=hex ... set slave address for following read/write commands
 - write=hex,... write out to slave, return number of bytes done
+- read=num ... read num bytes, return as hex values
+
+### SPI
+
+Communication to external chips via SPI bus, **ESP32 is master**.
+
+**NOTE** FSPI (Flash memory SPI) is not available via this software
+
+- **/HSPI** equals "SPI" on Arduino. Also available as **/SPI**  
+HSPI default pins: sck=14, miso=12, mosi=13, ss=15
+- **/VSPI**  
+VSPI defaults to sck=28, miso=19, mosi=23, ss=5
+
+#### general SPI settings
+
+- freqency=Hz ... set frequency (default 100000)
+- order=MSBFIRST(default)|LSBFIRST ... set bit order
+- mode=0(default)|1|2|3 ... set clock edge and data phase
+- pins=sck,miso,mosi,ss ... set pins to use
+- begin ... open interface
+- end ... end interface
+
+#### sending and receiving SPI data
+
+- write=hex,... write out to slave
+- writeread=hex,... write out to slave, return values read as hex value
 - read=num ... read num bytes, return as hex values
 
 ## Known issues / ideas for further improvements
@@ -199,6 +225,7 @@ Last one found will be set as default address
 
 ## Revision history
 
+- V3.1 added SPI (tested in loopback only)
 - V3.0 tested I2C
 - V2.5 added I2C (untested)
 - V2.4 debugged PWM
