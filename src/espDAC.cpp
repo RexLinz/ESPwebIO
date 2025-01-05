@@ -1,8 +1,5 @@
 #include "webIO.h"
 
-// arduino like interface does not distinguish ADC1 and ADC2
-espADC webADC;
-
 const String espDAC::help()
 {
     return

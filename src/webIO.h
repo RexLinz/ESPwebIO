@@ -7,7 +7,7 @@
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
-#define WEBIO_VERSION "WebIO version 3.0\r\n"
+#define WEBIO_VERSION "WebIO version 3.1\r\n"
 
 // some utility functions which might be useful to several parsers 
 class espRoot
@@ -28,9 +28,10 @@ public:
     void addResponse(String &message, String response, String separator);
     virtual String parse(String command, String value) { return ""; };
 };
-
 extern espRoot webRoot;
 
+
+// ESP32 has one GPIO instance
 class espGPIO : public espRoot
 {
 private:
@@ -54,11 +55,10 @@ public:
     const String help(); // return help string
     String parse(String command, String value);
 };
-
-// ESP has one GPIO instance
 extern espGPIO webGPIO;
 
 
+// ESP32 has three serial interfaces (UART)
 class espSerial : public espRoot
 {
 private:
@@ -86,6 +86,7 @@ extern espSerial webSerial0;
 extern espSerial webSerial1;
 extern espSerial webSerial2;
 
+
 // ESP32 has two DAC's
 class espDAC : public espRoot
 {
@@ -108,6 +109,7 @@ public:
 };
 extern espDAC webDAC1;
 extern espDAC webDAC2;
+
 
 // ESP32 has two ADC's, but ADC2 is blocked by WiFi!
 class espADC : public espRoot
@@ -142,7 +144,8 @@ public:
 };
 extern espADC webADC;
 
-// (LED) PWM, also suitable to be used as RC servo output
+
+// 16 channel (LED) PWM controller, also suitable to be used as RC servo output
 class espPWM : public espRoot
 {
 private:
@@ -170,6 +173,8 @@ public:
 };
 extern espPWM webPWM;
 
+
+// ESP32 has two I2C (TWI) controllers
 class espI2C : public espRoot
 {
 private:
@@ -194,7 +199,8 @@ public:
 extern espI2C webI2C0;
 extern espI2C webI2C1;
 
-// ESP32 has TODO SPI interfaces
+
+// ESP32 has 3 SPI interfaces, one reserved for flash memory
 class espSPI : public espRoot
 {
 private:

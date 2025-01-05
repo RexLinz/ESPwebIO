@@ -136,6 +136,3 @@ String espI2C::parse(String command, String value)
         result =  "[" + result + "]"; // output is array
     return "\"" + command + "\":" + result;
 }
-
-espI2C webI2C0(Wire);
-espI2C webI2C1(Wire1);

@@ -231,5 +231,3 @@ String espPWM::parse(String command, String value)
         result =  "[" + result + "]"; // output is array
     return "\"" + command + "\":" + result;
 }
-
-espPWM webPWM;

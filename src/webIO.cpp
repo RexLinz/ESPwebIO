@@ -109,7 +109,15 @@ espSerial webSerial2(Serial2); // pins TX=GPIO17, RX=GPIO16
 espDAC webDAC1(PIN_DAC1); // DAC1 at pin 25
 espDAC webDAC2(PIN_DAC2); // DAC2 at pin 26
 
-// TODO move espADC, espI2C, espPWM instances to here
+// Arduino like interface does not distinguish ADC1 and ADC2
+espADC webADC;
+
+// ESP32 has two I2C controllers
+espI2C webI2C0(Wire);
+espI2C webI2C1(Wire1);
+
+// ESP32 has one LEDPWM controller (total of 16 outputs)
+espPWM webPWM;
 
 // ESP32 has three SPI interfaces
 // espSPI webFSPI(FSPI); // SPI1 attached to flash memory, do not use
