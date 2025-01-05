@@ -8,9 +8,9 @@ DAC2 = "http://WebIO/DAC2"; % DAC1 on GPIO pin 26
 
 attMode = {"0dB", "2.5dB", "6dB", "11dB"};
 
-N = 256;
-val1 = NaN(N,length(attMode));
-val2 = NaN(N,length(attMode));
+N = 0:255;
+val1 = NaN(length(N), length(attMode));
+val2 = NaN(length(N),length(attMode));
 
 % webwrite(GPIO, "modeAnalog", "34,35");
 webwrite(ADC,
@@ -23,15 +23,16 @@ for a=1:length(attMode)
 
   disp(["attenuation " char(attMode(a)) ", scanning all DAC values"]);
   tic;
-  for n=1:N
-    webwrite(DAC1, "raw", num2str(n-1));
-    webwrite(DAC2, "raw", num2str(n-1));
+  i = 0;
+  for n = N
+    webwrite(DAC1, "raw", num2str(n));
+    webwrite(DAC2, "raw", num2str(n));
 %    r = webread(ADC, "raw", "34,35");
     r = webread(ADC, "raw", ""); % all configured pins
-    p = strfind(r, "\"raw\":[") + length("\"raw\":[");
-    v = sscanf(r(p:end), "%d,");
-    val1(n, a) = v(1);
-    val2(n, a) = v(2);
+    v = JSONextract(r, "raw");
+    i = i+1;
+    val1(i, a) = v(1);
+    val2(i, a) = v(2);
   end
   toc
 end
@@ -39,7 +40,6 @@ end
 webwrite(DAC1, "disable", "");
 webwrite(DAC2, "disable", "");
 
-N = 0:255;
 plot(
   N, val1(:,1), "r", % DAC1 0dB
   N, val2(:,1), "b", % DAC2 0dB
