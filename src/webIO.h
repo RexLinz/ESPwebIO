@@ -214,7 +214,7 @@ private:
     int mosiPin = -1; // default pin
     int ssPin   = -1; // default pin
     String setPins(String args);
-    String begin();
+    String begin(String args);
     String end();
     String write(String hexArgs); // write only (ignore input)
     String writeread(String hexArgs); // write and return input 

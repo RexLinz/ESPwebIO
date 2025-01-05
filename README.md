@@ -209,7 +209,8 @@ VSPI defaults to sck=28, miso=19, mosi=23, ss=5
 - order=MSBFIRST(default)|LSBFIRST ... set bit order
 - mode=0(default)|1|2|3 ... set clock edge and data phase
 - pins=sck,miso,mosi,ss ... set pins to use
-- begin ... open interface
+- begin=HardwareCS ... open interface  
+If argument `HardwareCS` is given ss pin will be controlled by driver
 - end ... end interface
 
 #### sending and receiving SPI data

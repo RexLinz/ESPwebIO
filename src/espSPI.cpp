@@ -12,7 +12,8 @@ const String espSPI::help()
         "  pins=sck,miso,mosi,ss ... set pins to use\r\n"
         "       HSPI defaults to sck=14, miso=12, mosi=13, ss=15\r\n"
         "       VSPI defaults to sck=28, miso=19, mosi=23, ss=5\r\n"
-        "  begin ... open interface\r\n"
+        "  begin=HardwareCS ... open interface\r\n"
+        "       if argument is HardwareCS ss pin will be controlled by driver\r\n"
         "  end ... end interface\r\n"
         "\nsending and receiving data\r\n"
         "  write=hex,... write out to slave\r\n"
@@ -80,11 +81,15 @@ String espSPI::setPins(String args)
     return String(sckPin) + "," + String(misoPin) + "," + String(mosiPin) + "," + String(ssPin);
 }
 
-String espSPI::begin()
+String espSPI::begin(String args)
 {
     bus.begin(sckPin, misoPin, mosiPin, ssPin);
-//    bus.setHwCs(true); // TODO add command to enable hardware CS
-    return "\"done\"";
+    bool useHwCs = (args=="HardwareCS");
+    bus.setHwCs(useHwCs);
+    if (useHwCs)
+        return args;
+    else
+        return "\"done\"";
 }
 
 String espSPI::end()
