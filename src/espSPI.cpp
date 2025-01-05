@@ -8,7 +8,7 @@ const String espSPI::help()
         "\ngeneral settings\r\n"
         "  freqency=Hz ... set frequency (default 100000)\r\n"
         "  order=MSBFIRST(default)|LSBFIRST ... set bit order\r\n"
-        "  mode=0(default)|1|2|3 ... set clock tp data phase\r\n"
+        "  mode=0(default)|1|2|3 ... set clock edge and data phase\r\n"
         "  pins=sck,miso,mosi,ss ... set pins to use\r\n"
         "       HSPI defaults to sck=14, miso=12, mosi=13, ss=15\r\n"
         "       VSPI defaults to sck=28, miso=19, mosi=23, ss=5\r\n"
