@@ -21,8 +21,7 @@ s = webread(I2C,
 % extract address of device found
 % we expect PCF8574A on address 0x38
 % NOTE the scan will set this device address as default
-p = strfind(s, "\"scan\":\"") + length("\"scan\":\"")
-address = uint8(sscanf(s(p:end), "%x"));
+address = JSONextract(s, "scan", true);
 disp(["device found at address 0x" num2hex(address)]);
 
 disp("\nscan LED's, press any key to stop");
@@ -30,12 +29,10 @@ direction = +1;
 do
   % read "changed" status
   s = webread(INT);
-  p = strfind(s, "\"state\":") + length("\"state\":");
-  unchanged = uint8(str2num(s(p)));
+  unchanged = JSONextract(s, "state", true);
   % read input(will reset changed status)
   s = webread(I2C, "read", "1");
-  p = strfind(s, "\"read\":\"") + length("\"read\":\"");
-  val = uint8(sscanf(s(p:end), "%x"));
+  val = JSONextract(s, "read", true);
   disp(["inputs = " dec2bin(val,8)]);
   if unchanged==0
     if bitand(val, 128)==0 % input 7 = rightmost button
