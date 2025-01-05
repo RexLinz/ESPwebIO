@@ -15,8 +15,8 @@ const String espSPI::help()
         "  begin ... open interface\r\n"
         "  end ... end interface\r\n"
         "\nsending and receiving data\r\n"
-        "  address=hex ... set read/write address\r\n"
-        "  write=hex,... write out to slave, return number of bytes done\r\n"
+        "  write=hex,... write out to slave\r\n"
+        "  writeread=hex,... write out to slave, return values read as hex value\r\n"
         "  read=num ... read num bytes, return as hex values";
 }
 
@@ -101,9 +101,10 @@ String espSPI::write(String hexArgs)
     {
         uint8_t n = nextHex(hexArgs);
         bus.transfer(n); // write and ignore response
+        bytesDone++;
     }
     bus.endTransaction();
-    return "\"done";
+    return String(bytesDone);
 }
 
 String espSPI::writeread(String hexArgs)
