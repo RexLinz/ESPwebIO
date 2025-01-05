@@ -2,6 +2,7 @@
 #define _WEBIO_H_
 #include <Arduino.h>
 #include <Wire.h>
+#include <SPI.h>
 
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
@@ -192,6 +193,31 @@ public:
 };
 extern espI2C webI2C0;
 extern espI2C webI2C1;
+
+// ESP32 has TODO SPI interfaces
+class espSPI : public espRoot
+{
+private:
+    SPIClass &bus;
+    int sckPin  = -1; // default pin
+    int misoPin = -1; // default pin
+    int mosiPin = -1; // default pin
+    int ssPin   = -1; // default pin
+    String setPins(String args);
+    SPISettings spiConfig; // frequency, bit order and SPI mode
+    String setFrequency(String Hz);
+    String setBitOrder(String bitOrder);
+    String setSPImode(String mode);
+    String begin();
+    String end();
+    String write(String hexArgs);
+    String read(String numBytes);
+public:
+    espSPI(SPIClass &spi) : bus(spi) {};
+    const String help();
+    String parse(String command, String value);
+};
+extern espSPI webSPI;
 
 /* 
 TODO future classes to be implemented
