@@ -3,39 +3,21 @@
 const String espSPI::help()
 {
     return 
-        "Help on SPI subsystem TODO /SPI\r\n"
+        "Help on SPI subsystem /SPI = /HSPI and /VSPI\r\n"
+        "NOTE: FSPI (interfacing ESP32's to flash memory) is not implemented\r\n"
         "\ngeneral settings\r\n"
+        "  freqency=Hz ... set frequency (default 100000)\r\n"
+        "  order=MSBFIRST(default)|LSBFIRST ... set bit order\r\n"
+        "  mode=0(default)|1|2|3 ... set clock tp data phase\r\n"
         "  pins=sck,miso,mosi,ss ... set pins to use\r\n"
-        "  freqency=Hz ... set frequency (default 100 kHz, max 400 kHz)\r\n"
+        "       HSPI defaults to sck=14, miso=12, mosi=13, ss=15\r\n"
+        "       VSPI defaults to sck=28, miso=19, mosi=23, ss=5\r\n"
         "  begin ... open interface\r\n"
-        "  scan ... scan bus and return address(es) of device(s) found\r\n"
-        "           last one found will be set as default address\r\n"
         "  end ... end interface\r\n"
         "\nsending and receiving data\r\n"
         "  address=hex ... set read/write address\r\n"
         "  write=hex,... write out to slave, return number of bytes done\r\n"
         "  read=num ... read num bytes, return as hex values";
-}
-
-String espSPI::setPins(String args)
-{
-    if (args.length()==0)
-        sckPin = -1;
-    else 
-        sckPin = nextInt(args);
-    if (args.length()==0)
-        misoPin = -1;
-    else
-        misoPin = nextInt(args);
-    if (args.length()==0)
-        mosiPin = -1;
-    else
-        mosiPin = nextInt(args);
-    if (args.length()==0)
-        ssPin = -1;
-    else
-        ssPin = nextInt(args);
-    return String(sckPin) + "," + String(misoPin) + "," + String(mosiPin) + "," + String(ssPin);
 }
 
 String espSPI::setFrequency(String args)
@@ -77,9 +59,31 @@ String espSPI::setSPImode(String args)
     return String(args);
 }
 
+String espSPI::setPins(String args)
+{
+    if (args.length()==0)
+        sckPin = -1;
+    else 
+        sckPin = nextInt(args);
+    if (args.length()==0)
+        misoPin = -1;
+    else
+        misoPin = nextInt(args);
+    if (args.length()==0)
+        mosiPin = -1;
+    else
+        mosiPin = nextInt(args);
+    if (args.length()==0)
+        ssPin = -1;
+    else
+        ssPin = nextInt(args);
+    return String(sckPin) + "," + String(misoPin) + "," + String(mosiPin) + "," + String(ssPin);
+}
+
 String espSPI::begin()
 {
     bus.begin(sckPin, misoPin, mosiPin, ssPin);
+//    bus.setHwCs(true); // TODO add command to enable hardware CS
     return "\"done\"";
 }
 
@@ -90,6 +94,19 @@ String espSPI::end()
 }
 
 String espSPI::write(String hexArgs)
+{
+    bus.beginTransaction(spiConfig);
+    int bytesDone = 0;
+    while (hexArgs.length() > 0)
+    {
+        uint8_t n = nextHex(hexArgs);
+        bus.transfer(n); // write and ignore response
+    }
+    bus.endTransaction();
+    return "\"done";
+}
+
+String espSPI::writeread(String hexArgs)
 {
     String response = "";
     bus.beginTransaction(spiConfig);
@@ -114,6 +131,7 @@ String espSPI::read(String numBytes)
         uint8_t b = bus.transfer(0); // dummy output data
         addResponse(response, String(b,HEX), ",");
     }
+    bus.endTransaction();
     return "\""+response+"\""; // as string, values are hexadecimal!
 }
 
@@ -134,6 +152,8 @@ String espSPI::parse(String command, String value)
         result = end();
     else if (command == "write")
         result = write(value);
+    else if (command == "writeread")
+        result = writeread(value);
     else if (command == "read")
         result = read(value); 
     else
@@ -141,11 +161,7 @@ String espSPI::parse(String command, String value)
     // complete result as JSON
     if (result.length()==0)
         return ""; // no output generated
-    if (result.indexOf(",") > 0)
+    if (!result.startsWith("\"") && (result.indexOf(",") > 0)) // no string and multiple values
         result =  "[" + result + "]"; // output is array
     return "\"" + command + "\":" + result;
 }
-
-espSPI webFSPI(FSPI); // SPI1 attached to flash memory
-espSPI webHSPI(HSPI); // SPI2 attached to pins mosi=12, 13, clk=14, ss=15 ???
-espSPI webVSPI(VSPI); // SPI3 attached to ss=5, clk=18, miso=19, mosi=23

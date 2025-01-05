@@ -129,6 +129,21 @@ void httpI2C1(AsyncWebServerRequest *request)
     httpJSON(webI2C1, request);
 }
 
+void httpHSPI(AsyncWebServerRequest *request)
+{
+    httpJSON(webHSPI, request);
+}
+
+void httpVSPI(AsyncWebServerRequest *request)
+{
+    httpJSON(webVSPI, request);
+}
+
+void httpSPI(AsyncWebServerRequest *request)
+{
+    httpJSON(webVSPI, request);
+}
+
 // display some debugging information 
 // for any request not handled else
 void httpNotFound(AsyncWebServerRequest *request) 
@@ -155,7 +170,7 @@ void startHTTP()
     // .../GPIO -> access digital IO pins
     server.on("/GPIO", httpGPIO);
     // async serial interfaces
-    server.on("/Serial",  httpSerial0); // Serial equals Serial0
+    server.on("/Serial",  httpSerial0); // using Serial0
     server.on("/Serial0", httpSerial0);
     server.on("/Serial1", httpSerial1);
     server.on("/Serial2", httpSerial2);
@@ -166,10 +181,14 @@ void startHTTP()
     server.on("/ADC", httpADC);
     // PWM controller
     server.on("/PWM", httpPWM);
-    // PWM controller
-    server.on("/I2C", httpI2C0);
+    // I2C bus
+    server.on("/I2C",  httpI2C0); // using I2C0 
     server.on("/I2C0", httpI2C0);
     server.on("/I2C0", httpI2C1);
+    // SPI bus
+    server.on("/SPI",  httpHSPI); // using HSPI
+    server.on("/HSPI", httpHSPI);
+    server.on("/VSPI", httpVSPI);
 
     // body data handling for binary IO to serial
     // https://github.com/me-no-dev/ESPAsyncWebServer#body-data-handling

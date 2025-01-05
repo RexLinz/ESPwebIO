@@ -198,41 +198,28 @@ extern espI2C webI2C1;
 class espSPI : public espRoot
 {
 private:
-    SPIClass &bus;
+    SPIClass bus;
+    SPISettings spiConfig; // frequency, bit order and SPI mode
+    String setFrequency(String Hz);
+    String setBitOrder(String bitOrder);
+    String setSPImode(String mode);
     int sckPin  = -1; // default pin
     int misoPin = -1; // default pin
     int mosiPin = -1; // default pin
     int ssPin   = -1; // default pin
     String setPins(String args);
-    SPISettings spiConfig; // frequency, bit order and SPI mode
-    String setFrequency(String Hz);
-    String setBitOrder(String bitOrder);
-    String setSPImode(String mode);
     String begin();
     String end();
-    String write(String hexArgs);
-    String read(String numBytes);
+    String write(String hexArgs); // write only (ignore input)
+    String writeread(String hexArgs); // write and return input 
+    String read(String numBytes); // read only (writes 0)
 public:
-    espSPI(SPIClass &spi) : bus(spi) {};
+    espSPI(uint8_t busNum) : bus(busNum), spiConfig(100000, MSBFIRST, SPI_MODE0) {};
     const String help();
     String parse(String command, String value);
 };
-extern espSPI webSPI;
-
-/* 
-TODO future classes to be implemented
-
-class espSPI
-{
-private:
-public:
-};
-
-class espPWM
-{
-private:
-public:
-};
-*/
+// extern espSPI webFSPI; // SPI1 attached to flash memory, do not use
+extern espSPI webHSPI; // SPI2 attached to clk=14, miso=12, mosi=13, ss=15
+extern espSPI webVSPI; // SPI3 attached to clk=18, miso=19, mosi=23, ss=5
 
 #endif

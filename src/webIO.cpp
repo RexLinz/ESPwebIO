@@ -82,6 +82,7 @@ const String espRoot::help()
         "  /ADC\r\n"
         "  /PWM\r\n"
         "  /I2C = /I2C0, /I2C1\r\n"
+        "  /SPI = /HSPI, /VSPI\r\n"
         "Requesting any subsystem without further parameters will return subsystem's help.\r\n"
         "More documentation available at https://github.com/RexLinz/ESPwebIO";
 }
@@ -107,3 +108,10 @@ espSerial webSerial2(Serial2); // pins TX=GPIO17, RX=GPIO16
 // ESP32 has two DAC channels available at gpio pins 25 and 26
 espDAC webDAC1(PIN_DAC1); // DAC1 at pin 25
 espDAC webDAC2(PIN_DAC2); // DAC2 at pin 26
+
+// TODO move espADC, espI2C, espPWM instances to here
+
+// ESP32 has three SPI interfaces
+// espSPI webFSPI(FSPI); // SPI1 attached to flash memory, do not use
+espSPI webHSPI(HSPI); // SPI2 attached to clk=14, miso=12, mosi=13, ss=15
+espSPI webVSPI(VSPI); // SPI3 attached to clk=18, miso=19, mosi=23, ss=5

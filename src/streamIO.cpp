@@ -103,11 +103,16 @@ void streamIO::parse(Stream & s)
         message = streamJSON(webI2C0, args);
     else if (url == "/I2C1")
         message = streamJSON(webI2C1, args);
+    else if (url == "/SPI")
+        message = streamJSON(webHSPI, args);
+    else if (url == "/HSPI")
+        message = streamJSON(webHSPI, args);
+    else if (url == "/VSPI")
+        message = streamJSON(webVSPI, args);
     else
         s.println("undefined url: \"" + url + "\""); 
     s.print(message + _endOfBlock);
     s.flush();
-// Serial.println(message + _endOfBlock);
 }
 
 streamIO webStream("\004"); // default object
