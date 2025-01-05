@@ -82,6 +82,8 @@ Sending and receiving from serial lines (UART)
 
 #### Serial configuration
 
+**NOTE** at the moment serial settings are fixed to 8N1
+
 - txPin=pin
 - rxPin=pin
 - txBufferSize=size
@@ -90,7 +92,6 @@ Sending and receiving from serial lines (UART)
 - setBaud=baud ... change baud rate. Equal to Serial.setBaud(baudrate) on Arduino
 - begin=baud   ... initialize at given baud rate  
 Equal to Serial.begin(baudrate) on Arduino.
-**NOTE** at the moment serial settings are fixed to 8N1
 
 **NOTE** if accessing a serial port on different pins than default set txPin and rxPin before calling begin, e.g. <http://WebIO/Serial1?txPin=23&rxPin=22&begin=115200> to configure Serial1 using txPin 23, rxPin 22 at 115200 baud, 8N1.
 
@@ -99,7 +100,8 @@ Equal to Serial.begin(baudrate) on Arduino.
 - write=string ... send string out to client
 - writeln=string ... send string adding configured line termination
 - read ... read all data available on serial port
-- readln ... read single line removing configured line termination. If a full line is not available return empty data.
+- readln ... read single line removing configured line termination.  
+If a full line is not available return empty data.
 
 ### DAC
 
@@ -128,7 +130,7 @@ For these commands a list of values or a single value (to be applied to all) cou
 ##### General settings
 
 - attenuation=0dB|2.5dB|6dB|11dB ... set input attenuation, default is 6dB  
-resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V  
+Resulting in full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V  
 **NOTE** ADC show serious nonlinearity in 11dB configuration above 2.5 V
 - oversampling=n ... return sum of n samples per read (noise reduction)
 
@@ -140,7 +142,7 @@ resulting of full scale range of about 1.0 / 1.35 / 1.9 / 3.3 V
 #### Reading ADC input
 
 - raw=pins ... read as is (uint)
-- value=pins ... read scaled value=(raw-offset)*scale (float)\r\n";
+- value=pins ... read scaled value=(raw-offset)*scale (float)
 
 ### PWM controller
 
@@ -161,7 +163,7 @@ Default settings are fine for RC servos using `width` command to set output.
 - width=microseconds,... set pulse width in microseconds
 - duty=value,... duty (0.0 to 1.0)
 - value=int,... value in integer range 0...2^(bits)-1
-- stop=channel,... stop and disable output of channel(s)
+- stop=channel,... stop and disable output of channel(s)  
 Using channel list if not specified in stop command
 
 ### I2C
@@ -180,6 +182,8 @@ Not available on Dev Kit C without manual pin assignment.
 - pins=scl,sda ... set pins to use
 - freqency=Hz ... set I2C bus clock frequency
 - begin ... open interface
+- scan ... scan bus and return address(es) of device(s) found  
+Last one found will be set as default address
 - end ... end interface
 
 #### sending and receiving data
