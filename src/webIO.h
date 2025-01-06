@@ -24,6 +24,8 @@ protected:
 public:
     // add response to message, if message is nonempty add separator before
     void addResponse(String &message, String response, String separator);
+    // complete a JSON response line
+    String JSONline(const String command, const String result);
     static String status(); // ESP status without WiFi
     virtual const String help(); // root help
     virtual String parse(String command, String value) { return ""; };

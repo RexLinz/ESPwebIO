@@ -70,6 +70,18 @@ void espRoot::addResponse(String &message, String response, String separator)
     }
 }
 
+String espRoot::JSONline(const String command, String result)
+{
+    // complete result as JSON
+    if (result.length()==0)
+        result = "\"no output\""; // no output generated
+    else if (result.indexOf("\",\"") > 0)
+        result = "[" + result + "]"; // output is array of strings
+    else if (!result.startsWith("\"") && (result.indexOf(",") > 0))
+        result =  "[" + result + "]"; // output is array of numbers (or booleans)
+    return "\"" + command + "\":" + result;
+}
+
 const String espRoot::help() 
 {
     return 
