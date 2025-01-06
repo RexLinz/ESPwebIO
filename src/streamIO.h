@@ -20,7 +20,7 @@ private:
     String streamJSON(espRoot &base, String args);
     String streamSerial(espSerial &base, String args);
 public:
-    streamIO(String termination="\004") : _endOfBlock(termination) {}; // 004 = End Of Transmission (EOT)
+    explicit streamIO(String termination="\004") : _endOfBlock(termination) {}; // 004 = End Of Transmission (EOT)
     void hostTerm(String termination) { _endOfBlock = termination; };
     void parse(Stream &s);
 };

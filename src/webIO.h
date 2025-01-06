@@ -22,10 +22,10 @@ protected:
     // get the next String value from separated list, remove that from list
     static String nextString(String &list, String delim=",");
 public:
+    // add response to message, if message is nonempty add separator before
+    void addResponse(String &message, String response, String separator);
     static String status(); // ESP status without WiFi
     virtual const String help(); // root help
-// add response to message, if message is nonempty add separator before
-    void addResponse(String &message, String response, String separator);
     virtual String parse(String command, String value) { return ""; };
 };
 extern espRoot webRoot;
@@ -52,8 +52,8 @@ private:
     String state(uint8_t pin);  // read state
 public:
     espGPIO(); // initialize
-    const String help(); // return help string
-    String parse(String command, String value);
+    const String help() final; // return help string
+    String parse(String command, String value) final;
 };
 extern espGPIO webGPIO;
 
@@ -78,9 +78,9 @@ private:
     String read();   // read all available data
     String readln(); // read single line removing configured line termination
 public:
-    espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
-    const String help();
-    String parse(String command, String value);
+    explicit espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
+    const String help() final;
+    String parse(String command, String value) final;
 };
 extern espSerial webSerial0;
 extern espSerial webSerial1;
@@ -103,9 +103,9 @@ private:
     String setValue(float val); // return scaled value set (clipped to range 0..255)
     String disable() { dacDisable(dacPin); return "\"OK\""; };
 public:
-    espDAC(uint8_t pin) : dacPin(pin) {};
-    const String help();
-    String parse(String command, String value);
+    explicit espDAC(uint8_t pin) : dacPin(pin) {};
+    const String help() final;
+    String parse(String command, String value) final;
 };
 extern espDAC webDAC1;
 extern espDAC webDAC2;
@@ -138,9 +138,9 @@ private:
     float getValue(uint8_t pin) { return ((getRaw(pin)-offset[pin]) * scale[pin]); };
     String parseList(String command, String numberList);
 public:
-    espADC(adc_attenuation_t att=ADC_6db); // default, best performance of ADC
-    const String help();
-    String parse(String command, String value);
+    explicit espADC(adc_attenuation_t att=ADC_6db); // default, best performance of ADC
+    const String help() final;
+    String parse(String command, String value) final;
 };
 extern espADC webADC;
 
@@ -167,8 +167,8 @@ private:
     String val(String channelList, String args); // range 0 to (2^bits)-1
 public:
     espPWM();
-    const String help();
-    String parse(String command, String value);
+    const String help() final;
+    String parse(String command, String value) final;
 
 };
 extern espPWM webPWM;
@@ -186,15 +186,15 @@ private:
     String setFrequency(String Hz);
     String begin();
     String end();
-    int address;
+    int address = -1;
     String setAddress(String address);
     String write(String hexArgs);
     String read(String numBytes);
     String scan();
 public:
-    espI2C(TwoWire &twi) : bus(twi) {};
-    const String help();
-    String parse(String command, String value);
+    explicit espI2C(TwoWire &twi) : bus(twi) {};
+    const String help() override;
+    String parse(String command, String value) override;
 };
 extern espI2C webI2C0;
 extern espI2C webI2C1;
@@ -220,9 +220,9 @@ private:
     String writeread(String hexArgs); // write and return input 
     String read(String numBytes); // read only (writes 0)
 public:
-    espSPI(uint8_t busNum) : bus(busNum), spiConfig(100000, MSBFIRST, SPI_MODE0) {};
-    const String help();
-    String parse(String command, String value);
+    explicit espSPI(uint8_t busNum) : bus(busNum), spiConfig(100000, MSBFIRST, SPI_MODE0) {};
+    const String help() final;
+    String parse(String command, String value) final;
 };
 // extern espSPI webFSPI; // SPI1 attached to flash memory, do not use
 extern espSPI webHSPI; // SPI2 attached to clk=14, miso=12, mosi=13, ss=15

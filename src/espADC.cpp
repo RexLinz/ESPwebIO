@@ -172,7 +172,6 @@ String espADC::setScale(String pinList, String valueList)
     return result;
 }
 
-
 uint32_t espADC::getRaw(uint8_t pin)
 {
     uint32_t temp = 0;

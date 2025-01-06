@@ -125,8 +125,8 @@ String espPWM::width(String channelList, String valueList)
             uint8_t channel = nextInt(channelList);
             float clkMHz= (LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.tick_sel) ? 80.0f : 1.0f;
             uint32_t clkDiv = LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.clock_divider;
-            float val = clkMHz/clkDiv*microseconds*256; // has 8 fractional bits
-            ledcWrite(channel, clipVal(channel, val));
+            float clkVal = clkMHz/clkDiv*microseconds*256; // has 8 fractional bits
+            ledcWrite(channel, clipVal(channel, clkVal));
             addResponse(result, String(microseconds), ",");
         }
     }
@@ -138,8 +138,8 @@ String espPWM::width(String channelList, String valueList)
             float clkMHz= (LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.tick_sel) ? 80.0f : 1.0f;
             uint32_t clkDiv = LEDC.timer_group[channel/8].timer[(channel/2)%4].conf.clock_divider;
             float microseconds = nextFloat(valueList);
-            float val = clkMHz/clkDiv*microseconds*256; // has 8 fractional bits
-            ledcWrite(channel, clipVal(channel, val));
+            float clkVal = clkMHz/clkDiv*microseconds*256; // has 8 fractional bits
+            ledcWrite(channel, clipVal(channel, clkVal));
             addResponse(result, String(microseconds), ",");
         }
     }
@@ -153,13 +153,13 @@ String espPWM::duty(String channelList, String valueList) // range 0.0 ... 1.0
     // assemble returned strings to JSON like array
     if (valueList.indexOf(',') < 0) // list or just a single value?
     { // just single configuration for all channels
-        float duty = nextFloat(valueList);
+        float dutyVal = nextFloat(valueList);
         while (channelList.length()>0)
         {
             uint8_t channel = nextInt(channelList);
             uint32_t maxval = maxVal(channel);
-            ledcWrite(channel, clipVal(channel, duty*maxval));
-            addResponse(result, String(duty), ",");
+            ledcWrite(channel, clipVal(channel, dutyVal*maxval));
+            addResponse(result, String(dutyVal), ",");
         }
     }
     else     
@@ -167,10 +167,10 @@ String espPWM::duty(String channelList, String valueList) // range 0.0 ... 1.0
         while ((channelList.length()>0) && (valueList.length()>0))
         {
             uint8_t channel = nextInt(channelList);
-            float duty = nextFloat(valueList);
+            float dutyVal = nextFloat(valueList);
             uint32_t maxval = maxVal(channel);
-            ledcWrite(channel, clipVal(channel, duty*maxval));
-            addResponse(result, String(duty), ",");
+            ledcWrite(channel, clipVal(channel, dutyVal*maxval));
+            addResponse(result, String(dutyVal), ",");
         }
     }
     return result;
@@ -181,12 +181,12 @@ String espPWM::val(String channelList, String valueList) // integers
     String result = "";
     if (valueList.indexOf(',') < 0) // list or just a single value?
     { // just single configuration for all channels
-        int32_t val = nextInt(valueList);
+        int32_t value = nextInt(valueList);
         while (channelList.length()>0)
         {
             uint8_t channel = nextInt(channelList);
-            ledcWrite(channel, clipVal(channel, val));
-            addResponse(result, String(val), ",");
+            ledcWrite(channel, clipVal(channel, value));
+            addResponse(result, String(value), ",");
         }
     }
     else
@@ -194,9 +194,9 @@ String espPWM::val(String channelList, String valueList) // integers
         while ((channelList.length()>0) && (valueList.length()>0))
         {
             uint8_t channel = nextInt(channelList);
-            int32_t val = nextInt(valueList);
-            ledcWrite(channel, clipVal(channel, val));
-            addResponse(result, String(val), ",");
+            int32_t value = nextInt(valueList);
+            ledcWrite(channel, clipVal(channel, value));
+            addResponse(result, String(value), ",");
         }
     }
     return result;

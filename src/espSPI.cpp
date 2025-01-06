@@ -116,7 +116,6 @@ String espSPI::writeread(String hexArgs)
 {
     String response = "";
     bus.beginTransaction(spiConfig);
-    int bytesDone = 0;
     while (hexArgs.length() > 0)
     {
         uint8_t n = nextHex(hexArgs);
