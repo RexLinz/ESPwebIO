@@ -78,9 +78,11 @@ void setup()
     connectWiFi(); // connect to WiFi network or create access point
 #ifdef _HTTPIO_H_
     startHTTP();   // start parsing of http requests
+    Serial.println("HTTP connection enabled");
 #endif
 #ifdef _STREAMIO_H_
     tcpServer.begin();
+    Serial.println("TCP connection enabled");
 #endif
 }
 
