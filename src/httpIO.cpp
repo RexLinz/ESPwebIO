@@ -129,6 +129,13 @@ void httpI2C1(AsyncWebServerRequest *request)
     httpJSON(webI2C1, request);
 }
 
+/* SPI1 reserved for Flash memory access
+void httpFSPI(AsyncWebServerRequest *request)
+{
+    httpJSON(webFSPI, request);
+}
+*/
+
 void httpHSPI(AsyncWebServerRequest *request)
 {
     httpJSON(webHSPI, request);
@@ -170,7 +177,7 @@ void startHTTP()
     // .../GPIO -> access digital IO pins
     server.on("/GPIO", httpGPIO);
     // async serial interfaces
-    server.on("/Serial",  httpSerial0); // using Serial0
+    server.on("/Serial",  httpSerial0); // Arduino default Serial using Serial0
     server.on("/Serial0", httpSerial0);
     server.on("/Serial1", httpSerial1);
     server.on("/Serial2", httpSerial2);
@@ -182,11 +189,12 @@ void startHTTP()
     // PWM controller
     server.on("/PWM", httpPWM);
     // I2C bus
-    server.on("/I2C",  httpI2C0); // using I2C0 
+    server.on("/I2C",  httpI2C0); // Arduino default I2C using I2C0 
     server.on("/I2C0", httpI2C0);
     server.on("/I2C0", httpI2C1);
     // SPI bus
-    server.on("/SPI",  httpHSPI); // using HSPI
+    server.on("/SPI",  httpHSPI); // Arduino default SPI using VSPI
+//    server.on("/FSPI", httpFSPI); // SPI1 reserved for Flash memory access
     server.on("/HSPI", httpHSPI);
     server.on("/VSPI", httpVSPI);
 

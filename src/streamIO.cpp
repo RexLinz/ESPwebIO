@@ -104,7 +104,11 @@ void streamIO::parse(Stream & s)
     else if (url == "/I2C1")
         message = streamJSON(webI2C1, args);
     else if (url == "/SPI")
-        message = streamJSON(webHSPI, args);
+        message = streamJSON(webVSPI, args); // Arduino default SPI is VSPI
+/*
+    else if (url == "/FSPI") // SPI1 reserved for Flash memory access
+        message = streamJSON(webFSPI, args);
+*/
     else if (url == "/HSPI")
         message = streamJSON(webHSPI, args);
     else if (url == "/VSPI")
