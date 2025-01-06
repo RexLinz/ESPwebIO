@@ -41,10 +41,11 @@ Commands where **pins** have to be specified accept a list of comma separated **
 - [/ADC](#adc) reading analog to digital converter input
 - [/PWM](#pwm-controller) PWM output (e.g. LEDs or RC servos)
 - [/I2C](#i2c) IO via I2C bus
+- [/SPI](#spi) IO via SPI interface
 
 ### Planned in future
 
-- `/SPI` IO via SPI
+- communication via BlueTooth?
 - ...
 
 ## Subsystem description
@@ -196,7 +197,7 @@ Last one found will be set as default address
 
 Communication to external chips via SPI bus, **ESP32 is master**.
 
-- **/FSPI** (Flash memory SPI) is **not** exposed via this software
+- **/FSPI** Flash memory SPI is **prepared but not exposed via this software**
 - **/HSPI** HSPI default pins: sck=14, miso=12, mosi=13, ss=15
 - **/VSPI** VSPI defaults to sck=28, miso=19, mosi=23, ss=5  
 Equals "SPI" on Arduino. Also available as **/SPI**  
@@ -225,8 +226,9 @@ If argument `HardwareSS` is given ss pin will be controlled by driver
 
 ## Revision history
 
+- V3.1.1 cleanup, should not change functionality
 - V3.1 added SPI (tested in loopback only)
-- V3.0 tested I2C
+- V3.0 tested I2C with PCF8574A port expander
 - V2.5 added I2C (untested)
 - V2.4 debugged PWM
 - V2.3 reworked PWM syntax, added PWM to README.md
