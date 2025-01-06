@@ -44,10 +44,5 @@ String espDAC::parse(String command, String value)
         result = setValue(value.toFloat());
     else
         result = "\"invalid keyword\"";
-    // complete result as JSON
-    if (result.length()==0)
-        return ""; // no output generated
-    if (result.indexOf(",") > 0)
-        result =  "[" + result + "]"; // output is array
-    return "\"" + command + "\":" + result;
+    return result;
 }

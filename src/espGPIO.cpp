@@ -193,9 +193,5 @@ String espGPIO::parse(String command, String numberList)
         // assemble result string
         addResponse(result, temp, ",");
     }
-    if (result.length()==0)
-        return ""; // no output generated
-    if (result.indexOf(",") > 0)
-        result =  "[" + result + "]"; // output is array
-    return "\"" + command + "\":" + result;
+    return result;
 }

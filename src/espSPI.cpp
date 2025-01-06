@@ -163,10 +163,5 @@ String espSPI::parse(String command, String value)
         result = read(value); 
     else
         result = "\"invalid keyword\"";
-    // complete result as JSON
-    if (result.length()==0)
-        return ""; // no output generated
-    if (!result.startsWith("\"") && (result.indexOf(",") > 0)) // no string and multiple values
-        result =  "[" + result + "]"; // output is array
-    return "\"" + command + "\":" + result;
+    return result;
 }

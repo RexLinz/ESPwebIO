@@ -31,8 +31,9 @@ void httpJSON(espRoot &base, AsyncWebServerRequest *request)
     { // process all arguments from request
         for (uint8_t i = 0; i < request->args(); i++) 
         {
-            String response = base.parse(request->argName(i), request->arg(i));
-            base.addResponse(message, response, ",\r\n");
+            String command = request->argName(i);
+            String result = base.parse(command, request->arg(i));
+            base.addResponse(message, base.JSONline(command, result), ",\r\n");
         }
         request->send(200, "application/json", "{\r\n" + message + "\r\n}");
     }
