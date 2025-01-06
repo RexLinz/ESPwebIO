@@ -7,7 +7,7 @@
 // JSON online tools for testing
 // https://emn178.github.io/online-tools/json/formatter/ 
 
-#define WEBIO_VERSION "WebIO version 3.1\r\n"
+#define WEBIO_VERSION "WebIO version 3.1.1\r\n"
 
 // some utility functions which might be useful to several parsers 
 class espRoot
@@ -202,7 +202,7 @@ extern espI2C webI2C0;
 extern espI2C webI2C1;
 
 
-// ESP32 has 3 SPI interfaces, one reserved for flash memory
+// ESP32 has 3 SPI interfaces, one reserved for Flash memory
 class espSPI : public espRoot
 {
 private:
@@ -226,8 +226,8 @@ public:
     const String help() final;
     String parse(const String &command, String value) final;
 };
-// extern espSPI webFSPI; // SPI1 attached to flash memory, do not use
-extern espSPI webHSPI; // SPI2 attached to clk=14, miso=12, mosi=13, ss=15
-extern espSPI webVSPI; // SPI3 attached to clk=18, miso=19, mosi=23, ss=5
+// extern espSPI webFSPI; // SPI1 attached to Flash memory, do not use
+extern espSPI webHSPI; // SPI2 default pins clk=14, miso=12, mosi=13, ss=15
+extern espSPI webVSPI; // SPI3 default pins clk=18, miso=19, mosi=23, ss=5
 
 #endif
