@@ -21,7 +21,7 @@ const String espSPI::help()
         "  read=num ... read num bytes, return as hex values";
 }
 
-String espSPI::setFrequency(String args)
+String espSPI::setFrequency(String &args)
 {
     if (args.length()==0)
         return "\"missing value\"";
@@ -30,7 +30,7 @@ String espSPI::setFrequency(String args)
     return String(spiConfig._clock);
 }
 
-String espSPI::setBitOrder(String args)
+String espSPI::setBitOrder(const String &args)
 {
     if (args.length()==0)
         return String("\"missing value\"");
@@ -43,7 +43,7 @@ String espSPI::setBitOrder(String args)
     return String(args);
 }
 
-String espSPI::setSPImode(String args)
+String espSPI::setSPImode(const String &args)
 {
     if (args.length()==0)
         return String("\"missing value\"");
@@ -60,7 +60,7 @@ String espSPI::setSPImode(String args)
     return String(args);
 }
 
-String espSPI::setPins(String args)
+String espSPI::setPins(String &args)
 {
     if (args.length()==0)
         sckPin = -1; // try to use default
@@ -81,7 +81,7 @@ String espSPI::setPins(String args)
     return String(sckPin) + "," + String(misoPin) + "," + String(mosiPin) + "," + String(ssPin);
 }
 
-String espSPI::begin(String args)
+String espSPI::begin(const String &args)
 {
     bus.begin(sckPin, misoPin, mosiPin, ssPin);
     bool useHwCs = (args=="HardwareSS");
@@ -98,7 +98,7 @@ String espSPI::end()
     return "\"done\"";
 }
 
-String espSPI::write(String hexArgs)
+String espSPI::write(String &hexArgs)
 {
     bus.beginTransaction(spiConfig);
     int bytesDone = 0;
@@ -112,7 +112,7 @@ String espSPI::write(String hexArgs)
     return String(bytesDone);
 }
 
-String espSPI::writeread(String hexArgs)
+String espSPI::writeread(String &hexArgs)
 {
     String response = "";
     bus.beginTransaction(spiConfig);
@@ -126,7 +126,7 @@ String espSPI::writeread(String hexArgs)
     return "\""+response+"\""; // as string, values are hexadecimal!
 }
 
-String espSPI::read(String numBytes)
+String espSPI::read(const String &numBytes)
 {
     String response = "";
     int bytes = numBytes.toInt(); // 
@@ -140,7 +140,7 @@ String espSPI::read(String numBytes)
     return "\""+response+"\""; // as string, values are hexadecimal!
 }
 
-String espSPI::parse(String command, String value)
+String espSPI::parse(const String &command, String value)
 {
     String result = "";
     if (command == "pins")

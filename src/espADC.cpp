@@ -203,7 +203,7 @@ String espADC::parseList(String command, String numberList)
     return result;
 }
 
-String espADC::parse(String command, String value)
+String espADC::parse(const String &command, String value)
 {
     // _serial.println(command + ":" + value);
     String result = "";

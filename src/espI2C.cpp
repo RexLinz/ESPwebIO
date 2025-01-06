@@ -30,12 +30,12 @@ String espI2C::setPins(String args)
     return String(sdaPin) + "," + String(sclPin);
 }
 
-String espI2C::setFrequency(String args)
+String espI2C::setFrequency(const String &args)
 {
     if (args.length()==0)
         frequency = 0;
     else 
-        frequency = nextInt(args);
+        frequency = args.toInt();
     return String(frequency);
 }
 
@@ -53,12 +53,12 @@ String espI2C::end()
     return "\"done\"";
 }
 
-String espI2C::setAddress(String hexAddress)
+String espI2C::setAddress(const String &hexAddress)
 {
     if (hexAddress.length()==0)
         return "\"missing\"";
     else 
-        address = nextHex(hexAddress);
+        address = strtol(hexAddress.c_str(), 0, 16); 
     return "\"" + String(address, HEX) + "\"";
 }
 
@@ -78,7 +78,7 @@ String espI2C::write(String hexArgs)
     return String(bytesDone);
 }
 
-String espI2C::read(String numBytes)
+String espI2C::read(const String &numBytes)
 {
     String response = "";
     int bytes = numBytes.toInt(); // 
@@ -108,7 +108,7 @@ String espI2C::scan()
     return "\"" + response + "\""; // as string, values are hexadecimal
 }
 
-String espI2C::parse(String command, String value)
+String espI2C::parse(const String &command, String value)
 {
     String result = "";
     if (command == "pins")

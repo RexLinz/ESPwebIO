@@ -39,13 +39,13 @@ uint32_t espPWM::clipVal(uint8_t channel, uint32_t val)
         return val;
 }
 
-String espPWM::setFrequency(String freq)
+String espPWM::setFrequency(const String &freq)
 {
     _frequency = freq.toInt();
     return freq; // TODO check range?
 }
 
-String espPWM::setResolution(String bits)
+String espPWM::setResolution(const String &bits)
 {
     _bits = bits.toInt();
     return bits; // TODO check range?
@@ -202,7 +202,7 @@ String espPWM::val(String channelList, String valueList) // integers
     return result;
 }
 
-String espPWM::parse(String command, String value)
+String espPWM::parse(const String &command, String value)
 {
     // _serial.println(command + ":" + value);
     String result = "";

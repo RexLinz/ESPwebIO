@@ -14,21 +14,21 @@ class espRoot
 {
 protected:
     // get the next int value from list, remove that from list
-    static int nextInt(String &list, String delim=",");
+    static int nextInt(String &list, const String delim=",");
     // get the next int value from list of hexadecimals, remove that from list
-    static int nextHex(String &list, String delim=",");
+    static int nextHex(String &list, const String delim=",");
     // get the next float value from separated list, remove that from list
-    static float nextFloat(String &list, String delim=",");
+    static float nextFloat(String &list, const String delim=",");
     // get the next String value from separated list, remove that from list
-    static String nextString(String &list, String delim=",");
+    static String nextString(String &list, const String delim=",");
 public:
     // add response to message, if message is nonempty add separator before
-    void addResponse(String &message, String response, String separator);
+    void addResponse(String &message, const String &response, const String &separator);
     // complete a JSON response line
-    String JSONline(const String command, const String result);
-    static String status(); // ESP status without WiFi
+    String JSONline(const String &command, const String &result);
+    static const String status(); // ESP status without WiFi
     virtual const String help(); // root help
-    virtual String parse(String command, String value) { return ""; };
+    virtual String parse(const String &command, String value) { return ""; };
 };
 extern espRoot webRoot;
 
@@ -55,7 +55,7 @@ private:
 public:
     espGPIO(); // initialize
     const String help() final; // return help string
-    String parse(String command, String value) final;
+    String parse(const String &command, String value) final;
 };
 extern espGPIO webGPIO;
 
@@ -72,17 +72,17 @@ private:
     // Arduino side buffer sizes (default is 128)
     String txBufferSize(size_t size) {_serial.setTxBufferSize(size); return String(size); };
     String rxBufferSize(size_t size) {_serial.setRxBufferSize(size); return String(size); };
-    String setTerm(String t); // set termination 
+    String setTerm(String &t); // set termination 
     String setBaud(unsigned long baud) { _serial.updateBaudRate(baud); return String(baud); };
     String begin(unsigned long baud) { _serial.begin(baud); return String(baud); };
-    String write(String s) { _serial.print(s); return "\"OK\""; }; // send string s
-    String writeln(String s) { _serial.print(s+_endOfLine); return "\"OK\""; }; // ... adding line termination
+    String write(const String &s) { _serial.print(s); return "\"OK\""; }; // send string s
+    String writeln(const String &s) { _serial.print(s+_endOfLine); return "\"OK\""; }; // ... adding line termination
     String read();   // read all available data
     String readln(); // read single line removing configured line termination
 public:
     explicit espSerial(HardwareSerial &hwserial) : _serial(hwserial) {};
     const String help() final;
-    String parse(String command, String value) final;
+    String parse(const String &command, String value) final;
 };
 extern espSerial webSerial0;
 extern espSerial webSerial1;
@@ -107,7 +107,7 @@ private:
 public:
     explicit espDAC(uint8_t pin) : dacPin(pin) {};
     const String help() final;
-    String parse(String command, String value) final;
+    String parse(const String &command, String value) final;
 };
 extern espDAC webDAC1;
 extern espDAC webDAC2;
@@ -142,7 +142,7 @@ private:
 public:
     explicit espADC(adc_attenuation_t att=ADC_6db); // default, best performance of ADC
     const String help() final;
-    String parse(String command, String value) final;
+    String parse(const String &command, String value) final;
 };
 extern espADC webADC;
 
@@ -158,8 +158,8 @@ private:
     String _channelList;
     uint32_t maxVal(uint8_t channel);
     uint32_t clipVal(uint8_t channel, uint32_t val);
-    String setFrequency(String freq);
-    String setResolution(String bits);
+    String setFrequency(const String &freq);
+    String setResolution(const String &bits);
     String setChannels(String channelList);
     String initChannel(uint8_t channel, uint8_t pin);
     String map(String channelList, String pinList);
@@ -170,7 +170,7 @@ private:
 public:
     espPWM();
     const String help() final;
-    String parse(String command, String value) final;
+    String parse(const String &command, String value) final;
 
 };
 extern espPWM webPWM;
@@ -185,18 +185,18 @@ private:
     int sclPin = -1; // default pin
     uint32_t frequency = 0; // default = 100000
     String setPins(String args);
-    String setFrequency(String Hz);
+    String setFrequency(const String &Hz);
     String begin();
     String end();
     int address = -1;
-    String setAddress(String address);
+    String setAddress(const String &address);
     String write(String hexArgs);
-    String read(String numBytes);
+    String read(const String &numBytes);
     String scan();
 public:
     explicit espI2C(TwoWire &twi) : bus(twi) {};
     const String help() override;
-    String parse(String command, String value) override;
+    String parse(const String &command, String value) override;
 };
 extern espI2C webI2C0;
 extern espI2C webI2C1;
@@ -208,23 +208,23 @@ class espSPI : public espRoot
 private:
     SPIClass bus;
     SPISettings spiConfig; // frequency, bit order and SPI mode
-    String setFrequency(String Hz);
-    String setBitOrder(String bitOrder);
-    String setSPImode(String mode);
+    String setFrequency(String &Hz);
+    String setBitOrder(const String &bitOrder);
+    String setSPImode(const String &mode);
     int sckPin  = -1; // default pin
     int misoPin = -1; // default pin
     int mosiPin = -1; // default pin
     int ssPin   = -1; // default pin
-    String setPins(String args);
-    String begin(String args);
+    String setPins(String &args);
+    String begin(const String &args);
     String end();
-    String write(String hexArgs); // write only (ignore input)
-    String writeread(String hexArgs); // write and return input 
-    String read(String numBytes); // read only (writes 0)
+    String write(String &hexArgs); // write only (ignore input)
+    String writeread(String &hexArgs); // write and return input 
+    String read(const String &numBytes); // read only (writes 0)
 public:
     explicit espSPI(uint8_t busNum) : bus(busNum), spiConfig(100000, MSBFIRST, SPI_MODE0) {};
     const String help() final;
-    String parse(String command, String value) final;
+    String parse(const String &command, String value) final;
 };
 // extern espSPI webFSPI; // SPI1 attached to flash memory, do not use
 extern espSPI webHSPI; // SPI2 attached to clk=14, miso=12, mosi=13, ss=15

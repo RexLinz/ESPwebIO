@@ -155,7 +155,7 @@ String espGPIO::mode(uint8_t pin) // read pin mode
     return "\"" + result + "\"";
 }
 
-String espGPIO::parse(String command, String numberList)
+String espGPIO::parse(const String &command, String numberList)
 {
     String result = "";
     // split pinList into numbers separated by comma

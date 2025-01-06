@@ -22,7 +22,7 @@ const String espSerial::help()
         "NOTE: settings default to 8,N,1";
 }
 
-String espSerial::setTerm(String value)
+String espSerial::setTerm(String &value)
 {
     if (value == "CR")
         _endOfLine = "\r";
@@ -66,7 +66,7 @@ String espSerial::readln()
     return s;
 }
 
-String espSerial::parse(String command, String value)
+String espSerial::parse(const String &command, String value)
 {
     // _serial.println(command + ":" + value);
     String result = "";

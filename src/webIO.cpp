@@ -4,7 +4,7 @@
 
 // get the next int value from comma separated list, 
 // remove that from list
-int espRoot::nextInt(String &list, String delim)
+int espRoot::nextInt(String &list, const String delim)
 {
     int val = list.toInt();
     int n = list.indexOf(delim);
@@ -17,7 +17,7 @@ int espRoot::nextInt(String &list, String delim)
 
 // get the next int value from comma separated list of hexadecimal values, 
 // remove that from list
-int espRoot::nextHex(String &list, String delim)
+int espRoot::nextHex(String &list, const String delim)
 {
     int val = strtol(list.c_str(), 0, 16);
     int n = list.indexOf(delim);
@@ -30,7 +30,7 @@ int espRoot::nextHex(String &list, String delim)
 
 // get the next float value from comma separated list, 
 // remove that from list
-float espRoot::nextFloat(String &list, String delim)
+float espRoot::nextFloat(String &list, const String delim)
 {
     float val = list.toFloat();
     int n = list.indexOf(delim);
@@ -43,7 +43,7 @@ float espRoot::nextFloat(String &list, String delim)
 
 // get the next float value from comma separated list, 
 // remove that from list
-String espRoot::nextString(String &list, String delim)
+String espRoot::nextString(String &list, const String delim)
 {
     int n = list.indexOf(delim);
     String val = "";
@@ -60,7 +60,7 @@ String espRoot::nextString(String &list, String delim)
     return val;
 }
 
-void espRoot::addResponse(String &message, String response, String separator)
+void espRoot::addResponse(String &message, const String &response, const String &separator)
 {
     if (response.length() > 0)
     {
@@ -70,16 +70,19 @@ void espRoot::addResponse(String &message, String response, String separator)
     }
 }
 
-String espRoot::JSONline(const String command, String result)
+String espRoot::JSONline(const String &command, const String &result)
 {
-    // complete result as JSON
+    // complete result as JSON line
+    String temp;
     if (result.length()==0)
-        result = "\"no output\""; // no output generated
+        temp = "\"no output\""; // no output generated
     else if (result.indexOf("\",\"") > 0)
-        result = "[" + result + "]"; // output is array of strings
+        temp = "[" + result + "]"; // output is array of strings
     else if (!result.startsWith("\"") && (result.indexOf(",") > 0))
-        result =  "[" + result + "]"; // output is array of numbers (or booleans)
-    return "\"" + command + "\":" + result;
+        temp =  "[" + result + "]"; // output is array of numbers (or booleans)
+    else
+        temp = result;
+    return "\"" + command + "\":" + temp;
 }
 
 const String espRoot::help() 
@@ -99,7 +102,7 @@ const String espRoot::help()
         "More documentation available at https://github.com/RexLinz/ESPwebIO";
 }
 
-String espRoot::status()
+const String espRoot::status()
 {
     String message = 
         WEBIO_VERSION

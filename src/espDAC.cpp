@@ -29,7 +29,7 @@ String espDAC::setValue(float value)
     return setRaw(intVal);
 }
 
-String espDAC::parse(String command, String value)
+String espDAC::parse(const String &command, String value)
 {
     String result = "";
     if (command == "raw")
