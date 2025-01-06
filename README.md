@@ -196,12 +196,10 @@ Last one found will be set as default address
 
 Communication to external chips via SPI bus, **ESP32 is master**.
 
-**NOTE** FSPI (Flash memory SPI) is not available via this software
-
-- **/HSPI** equals "SPI" on Arduino. Also available as **/SPI**  
-HSPI default pins: sck=14, miso=12, mosi=13, ss=15
-- **/VSPI**  
-VSPI defaults to sck=28, miso=19, mosi=23, ss=5
+- **/FSPI** (Flash memory SPI) is **not** exposed via this software
+- **/HSPI** HSPI default pins: sck=14, miso=12, mosi=13, ss=15
+- **/VSPI** VSPI defaults to sck=28, miso=19, mosi=23, ss=5  
+Equals "SPI" on Arduino. Also available as **/SPI**  
 
 #### general SPI settings
 
@@ -209,8 +207,8 @@ VSPI defaults to sck=28, miso=19, mosi=23, ss=5
 - order=MSBFIRST(default)|LSBFIRST ... set bit order
 - mode=0(default)|1|2|3 ... set clock edge and data phase
 - pins=sck,miso,mosi,ss ... set pins to use
-- begin=HardwareCS ... open interface  
-If argument `HardwareCS` is given ss pin will be controlled by driver
+- begin=HardwareSS ... open interface  
+If argument `HardwareSS` is given ss pin will be controlled by driver
 - end ... end interface
 
 #### sending and receiving SPI data
@@ -223,6 +221,7 @@ If argument `HardwareCS` is given ss pin will be controlled by driver
 
 - At the moment some commands simply ignore invalid input instead of returning error codes.
 - Check of pin capabilities is incomplete. There might be unexpected behaviour if specifying invalid pins.
+- add command SPI::select to use a pin as slave select (/CS) for the next transfer(s)
 
 ## Revision history
 

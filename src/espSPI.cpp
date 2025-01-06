@@ -3,17 +3,17 @@
 const String espSPI::help()
 {
     return 
-        "Help on SPI subsystem /SPI = /HSPI and /VSPI\r\n"
-        "NOTE: FSPI (interfacing ESP32's to flash memory) is not implemented\r\n"
+        "Help on SPI subsystem /HSPI and /VSPI = /SPI\r\n"
+        "NOTE: FSPI (interfacing ESP32's to flash memory) is prepared but not enabled by default\r\n"
         "\ngeneral settings\r\n"
-        "  freqency=Hz ... set frequency (default 100000)\r\n"
+        "  freqency=Hz ... set frequency (default 1000000)\r\n"
         "  order=MSBFIRST(default)|LSBFIRST ... set bit order\r\n"
         "  mode=0(default)|1|2|3 ... set clock edge and data phase\r\n"
         "  pins=sck,miso,mosi,ss ... set pins to use\r\n"
         "       HSPI defaults to sck=14, miso=12, mosi=13, ss=15\r\n"
-        "       VSPI defaults to sck=28, miso=19, mosi=23, ss=5\r\n"
-        "  begin=HardwareCS ... open interface\r\n"
-        "       if argument is HardwareCS ss pin will be controlled by driver\r\n"
+        "       VSPI defaults to sck=18, miso=19, mosi=23, ss=5\r\n"
+        "  begin=HardwareSS ... open interface\r\n"
+        "       if argument HardwareSS is given, ss pin will be controlled by driver\r\n"
         "  end ... end interface\r\n"
         "\nsending and receiving data\r\n"
         "  write=hex,... write out to slave\r\n"
@@ -24,7 +24,7 @@ const String espSPI::help()
 String espSPI::setFrequency(String args)
 {
     if (args.length()==0)
-        spiConfig._clock = 0;
+        return "\"missing value\"";
     else 
         spiConfig._clock = nextInt(args);
     return String(spiConfig._clock);
@@ -63,19 +63,19 @@ String espSPI::setSPImode(String args)
 String espSPI::setPins(String args)
 {
     if (args.length()==0)
-        sckPin = -1;
+        sckPin = -1; // try to use default
     else 
         sckPin = nextInt(args);
     if (args.length()==0)
-        misoPin = -1;
+        misoPin = -1; // try to use default
     else
         misoPin = nextInt(args);
     if (args.length()==0)
-        mosiPin = -1;
+        mosiPin = -1; // try to use default
     else
         mosiPin = nextInt(args);
     if (args.length()==0)
-        ssPin = -1;
+        ssPin = -1; // try to use default
     else
         ssPin = nextInt(args);
     return String(sckPin) + "," + String(misoPin) + "," + String(mosiPin) + "," + String(ssPin);
@@ -84,12 +84,12 @@ String espSPI::setPins(String args)
 String espSPI::begin(String args)
 {
     bus.begin(sckPin, misoPin, mosiPin, ssPin);
-    bool useHwCs = (args=="HardwareCS");
+    bool useHwCs = (args=="HardwareSS");
     bus.setHwCs(useHwCs);
     if (useHwCs)
-        return args;
+        return "\"Hardware Slave Select\"";
     else
-        return "\"done\"";
+        return "\"User Slave Select\"";
 }
 
 String espSPI::end()
