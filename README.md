@@ -226,6 +226,7 @@ If argument `HardwareSS` is given ss pin will be controlled by driver
 
 ## Revision history
 
+- V3.1.2 corrected /SPI mapping in http requests
 - V3.1.1 cleanup, should not change functionality
 - V3.1 added SPI (tested in loopback only)
 - V3.0 tested I2C with PCF8574A port expander
