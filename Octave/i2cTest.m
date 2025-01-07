@@ -37,7 +37,7 @@ do
   if unchanged==0
     if bitand(val, 128)==0 % input 7 = rightmost button
       direction = +1;
-      disp("left to right");
+      disp("low to high");
     elseif bitand(val, 64)==0 % input 6
       val = bitor(val, 15);
       disp("restarted");
@@ -46,18 +46,18 @@ do
       disp("stopped");
     elseif bitand(val, 16)==0 % input 4 = leftmost button
       direction = -1;
-      disp("right to left");
+      disp("high to low");
     end
   end
   switch direction
-    case +1 % LEDs running left to right
+    case +1 % LEDs running low to high
       val = bitand(bitshift(val,+1), 15);
       if val==0
         val=1;
       end
     case 0
       % stopped
-    case -1 % LEDs running right to left
+    case -1 % LEDs running high to low
       val = bitshift(bitand(val,15), -1);
       if val==0
         val=8;
