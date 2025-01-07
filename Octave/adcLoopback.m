@@ -1,4 +1,8 @@
 % test of scaled DAC output
+%
+% connect
+% GPIO 25 (DAC1) to 34 ADC1-6 input
+% GPIO 26 (DAC2) to 35 ADC1-7 input
 
 % server web address or host name
 %GPIO = "http://WebIO/GPIO";
