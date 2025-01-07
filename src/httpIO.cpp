@@ -194,7 +194,7 @@ void startHTTP()
     server.on("/I2C0", httpI2C0);
     server.on("/I2C0", httpI2C1);
     // SPI bus
-    server.on("/SPI",  httpHSPI); // Arduino default SPI using VSPI
+    server.on("/SPI",  httpVSPI); // Arduino default SPI using VSPI
 //    server.on("/FSPI", httpFSPI); // SPI1 reserved for Flash memory access
     server.on("/HSPI", httpHSPI);
     server.on("/VSPI", httpVSPI);
